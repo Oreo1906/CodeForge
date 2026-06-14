@@ -487,31 +487,31 @@ input:focus,textarea:focus{border-color:var(--accent)}
                   <div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <div class="f1"><div class="sm bold">Solve 2 medium problems</div><div class="xs muted">Completed · +200 XP</div></div>
+                  <div class="f1"><div class="sm bold">Solve 2 medium problems</div><div class="xs muted">Completed</div></div>
                   <span class="badge badge-green">Done</span>
                 </div>
                 <div class="card-sm flex" style="border-color:rgba(0,229,160,0.3)">
                   <div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <div class="f1"><div class="sm bold">Help someone in the community</div><div class="xs muted">Completed · +100 XP</div></div>
+                  <div class="f1"><div class="sm bold">Help someone in the community</div><div class="xs muted">Completed</div></div>
                   <span class="badge badge-green">Done</span>
                 </div>
                 <div class="card-sm flex" style="border-color:rgba(0,229,160,0.3)">
                   <div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <div class="f1"><div class="sm bold">Attend a study room session</div><div class="xs muted">Completed · +150 XP</div></div>
+                  <div class="f1"><div class="sm bold">Attend a study room session</div><div class="xs muted">Completed</div></div>
                   <span class="badge badge-green">Done</span>
                 </div>
                 <div class="card-sm flex">
                   <div style="width:20px;height:20px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);flex-shrink:0"></div>
-                  <div class="f1"><div class="sm bold">Solve 1 hard problem</div><div class="xs muted">0 / 1 · +400 XP</div></div>
+                  <div class="f1"><div class="sm bold">Solve 1 hard problem</div><div class="xs muted">0 / 1</div></div>
                   <button class="btn btn-primary btn-sm" onclick="navigate('problems')">Solve</button>
                 </div>
                 <div class="card-sm flex">
                   <div style="width:20px;height:20px;border-radius:50%;background:var(--panel2);border:2px solid var(--dim);flex-shrink:0"></div>
-                  <div class="f1"><div class="sm bold">Win a coding battle</div><div class="xs muted">0 / 1 · +300 XP</div></div>
+                  <div class="f1"><div class="sm bold">Win a coding battle</div><div class="xs muted">0 / 1</div></div>
                   <button class="btn btn-primary btn-sm" onclick="navigate('battles')">Battle</button>
                 </div>
               </div>
@@ -805,13 +805,13 @@ input:focus,textarea:focus{border-color:var(--accent)}
           <button class="btn btn-primary" onclick="openModal('createCommModal')">+ Create Community</button>
         </div>
         <div class="tabs" id="commTabs">
-          <div class="tab active" onclick="switchTab('commTabs','commTabContent',0)">My Communities</div>
+          <div class="tab active" onclick="switchTab('commTabs','commTabContent',0)">My Community</div>
           <div class="tab" onclick="switchTab('commTabs','commTabContent',1)">Discover</div>
           <div class="tab" onclick="switchTab('commTabs','commTabContent',2)">Clan Wars</div>
         </div>
         <div id="commTabContent">
           <div class="tab-content active">
-            <div class="grid3" id="myComms"></div>
+            <div id="myCommSingle"></div>
           </div>
           <div class="tab-content">
             <div class="grid3" id="discoverComms"></div>
@@ -1650,14 +1650,14 @@ function initFeed(){
   const fi=document.getElementById('feedItems');
   if(fi&&fi.children.length)return;
   const events=[
-    {u:'Priya K.',init:'PK',av:'av-gold',msg:'solved <b>Median of Two Sorted Arrays</b> in 12m 40s',time:'3m ago',badge:'Hard',bclass:'badge-red',xp:'+400 XP'},
+    {u:'Priya K.',init:'PK',av:'av-gold',msg:'solved <b>Median of Two Sorted Arrays</b> in 12m 40s',time:'3m ago',badge:'Hard',bclass:'badge-red'},
     {u:'DSA India Community',init:'DS',av:'av-green',msg:'🔥 reached <b>Extremely Active</b> status — 10,200 problems solved this week!',time:'8m ago',badge:null},
-    {u:'Arjun R.',init:'AR',av:'av-blue',msg:'challenged <b>Sujal K.</b> to a 1v1 battle',time:'14m ago',badge:'1v1',bclass:'badge-orange',xp:null},
+    {u:'Arjun R.',init:'AR',av:'av-blue',msg:'challenged <b>Sujal K.</b> to a 1v1 battle',time:'14m ago',badge:'1v1',bclass:'badge-orange'},
     {u:'Ananya S.',init:'AS',av:'av-purple',msg:'completed the <b>System Design Quest</b> — earned "Architect" badge 🏛️',time:'22m ago',badge:'Achievement',bclass:'badge-purple'},
-    {u:'Rahul D.',init:'RD',av:'av-green',msg:'hit a <b>365-day streak</b>! 🎉 Legendary Consistency unlocked',time:'1h ago',badge:'Streak',bclass:'badge-gold',xp:'+5000 XP'},
+    {u:'Rahul D.',init:'RD',av:'av-green',msg:'hit a <b>365-day streak</b>! 🎉 Legendary Consistency unlocked',time:'1h ago',badge:'Streak',bclass:'badge-gold'},
     {u:'Binary Warriors',init:'BW',av:'av-orange',msg:'won <b>Clan Wars Week 24</b> with 1,240 problems solved',time:'2h ago',badge:null},
     {u:'Meera D.',init:'MD',av:'av-green',msg:'published editorial for <b>Trapping Rain Water</b> — 241 upvotes',time:'3h ago',badge:'Editorial',bclass:'badge-green'},
-    {u:'Karan V.',init:'KV',av:'av-purple',msg:'reached <b>Diamond</b> rank! New personal best 💎',time:'4h ago',badge:'Rank Up',bclass:'badge-gold',xp:'+1000 XP'},
+    {u:'Karan V.',init:'KV',av:'av-purple',msg:'reached <b>Diamond</b> rank! New personal best 💎',time:'4h ago',badge:'Rank Up',bclass:'badge-gold'},
   ];
   events.forEach(e=>{
     fi.innerHTML+=`<div class="card">
@@ -1665,7 +1665,7 @@ function initFeed(){
         <div class="avatar av40 ${e.av}">${e.init}</div>
         <div class="f1">
           <div class="sm"><b>${e.u}</b> ${e.msg}</div>
-          <div class="xs muted mt4">${e.time} ${e.xp?'· <span style="color:var(--green)">'+e.xp+'</span>':''}</div>
+          <div class="xs muted mt4">${e.time}</div>
         </div>
         ${e.badge?`<span class="badge ${e.bclass}">${e.badge}</span>`:''}
       </div>
@@ -1784,8 +1784,8 @@ function initBattles(){
 function initContests(){
   const cl=document.getElementById('contestList');
   if(cl&&cl.children.length)return;
-  [{name:'Weekly Contest #24',type:'Weekly',time:'Starts in 2h 14m',rated:true,prize:'500 XP'},
-   {name:'Biweekly Contest #112',type:'Biweekly',time:'Starts in 4 days',rated:true,prize:'1,000 XP'},
+  [{name:'Weekly Contest #24',type:'Weekly',time:'Starts in 2h 14m',rated:true,prize:'500 FC'},
+   {name:'Biweekly Contest #112',type:'Biweekly',time:'Starts in 4 days',rated:true,prize:'1,000 FC'},
    {name:'DSA India Community Cup',type:'Community',time:'Starts in 7 days',rated:false,prize:'2,000 FC'},
    {name:'Season 3 Grand Finale',type:'Season',time:'Starts in 18 days',rated:true,prize:'Legend Badge + 10,000 FC'},
   ].forEach(c=>{
@@ -1862,22 +1862,23 @@ function initLeaderboard(){
 }
 
 // ===================== COMMUNITIES =====================
+// A user belongs to exactly ONE community at a time.
+let userCommunity = communities[0]; // DSA India — current membership
+
 function initCommunities(){
-  const mc=document.getElementById('myComms');
-  if(mc&&mc.children.length)return;
-  communities.slice(0,3).forEach(c=>{
-    mc.innerHTML+=buildCommCard(c,true);
-  });
+  renderMyCommunity();
+
   const dc=document.getElementById('discoverComms');
   if(dc&&!dc.children.length){
-    communities.slice(3).forEach(c=>{dc.innerHTML+=buildCommCard(c,false);});
+    // Show all communities except the one user already belongs to
+    communities.forEach(c=>{ dc.innerHTML+=buildCommCard(c); });
   }
 
   const cwc=document.getElementById('clanWarsContent');
   if(cwc&&!cwc.children.length){
     cwc.innerHTML=`<div class="card mb16" style="background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(245,200,66,0.06));border-color:rgba(255,107,53,0.3)">
       <div style="font-size:18px;font-weight:700;margin-bottom:6px">⚔️ Clan Wars — Week 24</div>
-      <div class="muted sm">Top community by problems solved wins Season Points and exclusive trophies</div>
+      <div class="muted sm">Top community by problems solved wins Season Points and exclusive trophies. Your community competes on your behalf.</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
     ${[{rank:1,name:'DSA India',emoji:'🌿',solved:10242,members:42810,pts:1200},
@@ -1887,27 +1888,149 @@ function initCommunities(){
     ].map(c=>`<div class="card-sm flex">
       <span style="font-size:18px;width:28px;text-align:center">${c.rank===1?'🥇':c.rank===2?'🥈':c.rank===3?'🥉':'#'+c.rank}</span>
       <div style="font-size:20px">${c.emoji}</div>
-      <div class="f1"><div class="sm bold">${c.name}</div><div class="xs muted">${c.members.toLocaleString()} members</div></div>
+      <div class="f1"><div class="sm bold">${c.name}${c.name===userCommunity.name?' <span class="badge badge-green" style="font-size:9px">Your community</span>':''}</div><div class="xs muted">${c.members.toLocaleString()} members</div></div>
       <div class="right"><div class="sm bold" style="color:var(--green)">${c.solved.toLocaleString()}</div><div class="xs muted">problems</div></div>
       <div class="right" style="margin-left:12px"><div class="sm bold" style="color:var(--gold)">${c.pts}</div><div class="xs muted">pts</div></div>
     </div>`).join('')}
     </div>`;
   }
 }
-function buildCommCard(c,joined){
+
+function renderMyCommunity(){
+  const mc=document.getElementById('myCommSingle');
+  if(!mc)return;
+  const c=userCommunity;
   const hColor=c.heat>80?'var(--orange)':c.heat>60?'var(--green)':'var(--accent)';
+  mc.innerHTML=`
+    <div class="card mb16" style="border-color:rgba(124,92,252,0.3);background:linear-gradient(135deg,rgba(124,92,252,0.06),rgba(0,0,0,0))">
+      <div class="flex mb12" style="gap:14px;align-items:flex-start">
+        <div style="width:56px;height:56px;border-radius:14px;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">${c.emoji}</div>
+        <div class="f1">
+          <div style="font-size:18px;font-weight:700;margin-bottom:2px">${c.name}</div>
+          <div class="xs muted mb6">${c.members.toLocaleString()} members · ${c.cat}</div>
+          <div class="flex gap6 mb6">
+            <div class="comm-heat-bar" style="max-width:160px"><div class="chb-fill" style="width:${c.heat}%;background:${hColor}"></div></div>
+            <span class="xs" style="color:${hColor}">${c.heatLabel}</span>
+          </div>
+          <span class="badge badge-green">✓ Your community</span>
+        </div>
+        <div class="flex gap4">
+          <button class="btn btn-primary btn-sm" onclick="navigate('community-interior')">Open</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('leaveCommunityModal')">Leave</button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px">
+        <div class="stat-mini"><div class="stat-big" style="font-size:16px;color:var(--green)">10,242</div><div class="stat-lbl">Problems this week</div></div>
+        <div class="stat-mini"><div class="stat-big" style="font-size:16px;color:var(--accent)">3,241</div><div class="stat-lbl">Members online</div></div>
+        <div class="stat-mini"><div class="stat-big" style="font-size:16px;color:var(--gold)">#1</div><div class="stat-lbl">Clan Wars rank</div></div>
+        <div class="stat-mini"><div class="stat-big" style="font-size:16px;color:var(--orange)">1,200</div><div class="stat-lbl">Season points</div></div>
+      </div>
+    </div>
+    <div class="card mb12">
+      <div class="section-hd mb10"><div class="section-title">Your role in ${c.name}</div></div>
+      <div class="flex gap8 mb10">
+        <div class="avatar av40 av-purple">SK</div>
+        <div class="f1">
+          <div class="sm bold">Sujal K. <span class="badge badge-purple" style="font-size:9px">Co-founder</span></div>
+          <div class="xs muted">Member since Season 1 · Top contributor rank #3</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div class="stat-mini"><div class="stat-big" style="font-size:14px;color:var(--accent)">#3</div><div class="stat-lbl">Your rank in community</div></div>
+        <div class="stat-mini"><div class="stat-big" style="font-size:14px;color:var(--green)">3,541</div><div class="stat-lbl">Community points</div></div>
+        <div class="stat-mini"><div class="stat-big" style="font-size:14px;color:var(--gold)">141</div><div class="stat-lbl">Members helped</div></div>
+      </div>
+    </div>
+    <div class="flex gap4">
+      <button class="btn btn-primary btn-sm" onclick="navigate('community-interior')">💬 Go to chat</button>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('📅','Opening community events…','dim')">📅 Events</button>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('📊','Opening community leaderboard…','dim')">🏅 Leaderboard</button>
+    </div>
+  `;
+
+  // Leave community modal — inject if not exists
+  if(!document.getElementById('leaveCommunityModal')){
+    const m=document.createElement('div');
+    m.id='leaveCommunityModal';
+    m.className='modal-overlay';
+    m.setAttribute('onclick',"if(event.target===this)closeModal('leaveCommunityModal')");
+    m.innerHTML=`<div class="modal" style="width:380px">
+      <div class="modal-hd"><div class="modal-title">Leave community?</div><div class="modal-close" onclick="closeModal('leaveCommunityModal')">×</div></div>
+      <div class="card-sm mb14" style="background:rgba(255,68,102,0.06);border-color:rgba(255,68,102,0.3)">
+        <div class="sm bold mb4" style="color:var(--red)">⚠ You can only be in one community at a time</div>
+        <div class="xs muted">Leaving <b>${c.name}</b> means you lose your community rank, points, and Clan Wars contribution until you join another community. This action cannot be undone for 7 days.</div>
+      </div>
+      <div class="form-group"><div class="form-label">Why are you leaving?</div>
+        <select>
+          <option>Joining a different community</option>
+          <option>Taking a break from communities</option>
+          <option>Community is no longer active</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="flex gap6">
+        <button class="btn btn-danger f1" onclick="leaveCommunity()">Leave ${c.name}</button>
+        <button class="btn btn-ghost" onclick="closeModal('leaveCommunityModal')">Cancel</button>
+      </div>
+    </div>`;
+    document.body.appendChild(m);
+  }
+}
+
+function leaveCommunity(){
+  closeModal('leaveCommunityModal');
+  userCommunity=null;
+  const mc=document.getElementById('myCommSingle');
+  if(mc) mc.innerHTML=`
+    <div class="card" style="text-align:center;padding:48px 24px;border-style:dashed">
+      <div style="font-size:40px;margin-bottom:12px">🌐</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px">You're not in any community</div>
+      <div class="sm muted mb20">Join a community to compete in Clan Wars, earn community points, and collaborate with like-minded developers.</div>
+      <button class="btn btn-primary" onclick="switchTab('commTabs','commTabContent',1)">Browse communities →</button>
+    </div>`;
+  // Refresh discover tab so all communities show join button
+  const dc=document.getElementById('discoverComms');
+  if(dc){dc.innerHTML='';communities.forEach(c=>{dc.innerHTML+=buildCommCard(c);});}
+  showToast('✓','You have left the community. Find a new one in Discover.','dim');
+}
+window.leaveCommunity=leaveCommunity;
+
+function buildCommCard(c){
+  const hColor=c.heat>80?'var(--orange)':c.heat>60?'var(--green)':'var(--accent)';
+  const isMine=userCommunity&&userCommunity.name===c.name;
   return `<div class="card">
     <div class="flex mb10">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px">${c.emoji}</div>
-      <div class="f1"><div class="sm bold">${c.name}</div><div class="xs muted">${c.members.toLocaleString()} members</div></div>
+      <div class="f1" style="margin-left:8px"><div class="sm bold">${c.name}</div><div class="xs muted">${c.members.toLocaleString()} members</div></div>
     </div>
     <div class="flex mb10 gap6"><div class="comm-heat-bar"><div class="chb-fill" style="width:${c.heat}%;background:${hColor}"></div></div><span class="xs" style="color:${hColor};white-space:nowrap">${c.heatLabel}</span></div>
-    <div class="flex gap4">
-      <button class="btn ${joined?'btn-ghost':'btn-primary'} btn-xs f1" onclick="showToast('${joined?'✓':'✓'}','${joined?'Opened':'Joined'} ${c.name}!','${joined?'dim':'green'}')">${joined?'Open':'Join'}</button>
-      ${joined?`<button class="btn btn-ghost btn-xs" onclick="showToast('💬','Opening ${c.name} chat…','dim')">Chat</button>`:''}
-    </div>
+    <div class="xs muted mb10">${c.cat}</div>
+    ${isMine
+      ? `<div class="flex gap4"><button class="btn btn-ghost btn-xs f1" onclick="navigate('community-interior')">Open</button><span class="badge badge-green" style="margin-left:4px">✓ Joined</span></div>`
+      : `<button class="btn btn-primary btn-xs" style="width:100%" onclick="joinCommunity('${c.name}')">${userCommunity?'Switch to this community':'Join community'}</button>`
+    }
   </div>`;
 }
+
+function joinCommunity(name){
+  const target=communities.find(c=>c.name===name);
+  if(!target)return;
+  if(userCommunity){
+    // Switching — confirm
+    if(!confirm(`Leave "${userCommunity.name}" and join "${target.name}"?\n\nYou can only be in one community at a time. You'll lose your current community rank and points.`))return;
+  }
+  userCommunity=target;
+  // Re-render my community tab
+  renderMyCommunity();
+  // Refresh discover grid
+  const dc=document.getElementById('discoverComms');
+  if(dc){dc.innerHTML='';communities.forEach(c=>{dc.innerHTML+=buildCommCard(c);});}
+  showToast('🌐',`Joined ${target.name}! Welcome to the community.`,'green');
+  // Switch to My Community tab
+  switchTab('commTabs','commTabContent',0);
+}
+window.joinCommunity=joinCommunity;
 
 // ===================== TEAMS =====================
 function initTeams(){
@@ -2169,10 +2292,10 @@ function sendCoachMsg(){
 function initCareerQuest(){
   const qp=document.getElementById('questPaths');
   if(qp&&qp.children.length)return;
-  [{emoji:'⚙️',name:'Backend Engineer',desc:'Master APIs, databases, and distributed systems',xp:12000,progress:65},
-   {emoji:'🤖',name:'AI Engineer',desc:'ML fundamentals, deep learning, and MLOps',xp:15000,progress:40},
-   {emoji:'🌐',name:'Full Stack Dev',desc:'Frontend + Backend + DevOps mastery',xp:18000,progress:55},
-   {emoji:'🏆',name:'Competitive Programmer',desc:'Reach International Master level',xp:20000,progress:78},
+  [{emoji:'⚙️',name:'Backend Engineer',desc:'Master APIs, databases, and distributed systems',progress:65},
+   {emoji:'🤖',name:'AI Engineer',desc:'ML fundamentals, deep learning, and MLOps',progress:40},
+   {emoji:'🌐',name:'Full Stack Dev',desc:'Frontend + Backend + DevOps mastery',progress:55},
+   {emoji:'🏆',name:'Competitive Programmer',desc:'Reach International Master level',progress:78},
   ].forEach(q=>{
     qp.innerHTML+=`<div class="card">
       <div style="font-size:28px;margin-bottom:8px">${q.emoji}</div>
@@ -2180,8 +2303,7 @@ function initCareerQuest(){
       <div class="xs muted mb10">${q.desc}</div>
       <div class="flex mb4"><span class="xs muted f1">Progress</span><span class="xs bold" style="color:var(--accent)">${q.progress}%</span></div>
       <div class="prog-bar mb8"><div class="prog-fill prog-purple" style="width:${q.progress}%"></div></div>
-      <div class="flex" style="justify-content:space-between">
-        <span class="xs muted">🎁 ${q.xp.toLocaleString()} XP total</span>
+      <div class="flex" style="justify-content:flex-end">
         <button class="btn btn-primary btn-xs" onclick="showToast('⚔️','Quest activated!','purple')">Continue</button>
       </div>
     </div>`;
@@ -2189,9 +2311,9 @@ function initCareerQuest(){
 
   const aq=document.getElementById('activeQuests');
   if(aq&&!aq.children.length){
-    [{name:'Build a REST API from scratch',quest:'Backend Engineer',milestone:'3/5 tasks done',xp:800},
-     {name:'Solve 50 Graph problems',quest:'Competitive Programmer',milestone:'31/50 done',xp:1200},
-     {name:'System Design: Design Twitter',quest:'Full Stack Dev',milestone:'In progress',xp:600},
+    [{name:'Build a REST API from scratch',quest:'Backend Engineer',milestone:'3/5 tasks done'},
+     {name:'Solve 50 Graph problems',quest:'Competitive Programmer',milestone:'31/50 done'},
+     {name:'System Design: Design Twitter',quest:'Full Stack Dev',milestone:'In progress'},
     ].forEach(q=>{
       aq.innerHTML+=`<div class="card-sm flex">
         <div class="f1">
@@ -2199,7 +2321,6 @@ function initCareerQuest(){
           <div class="xs muted">${q.quest} · ${q.milestone}</div>
         </div>
         <div class="right">
-          <div class="xs bold" style="color:var(--gold)">+${q.xp} XP</div>
           <button class="btn btn-primary btn-xs mt4">Continue</button>
         </div>
       </div>`;
