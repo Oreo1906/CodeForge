@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeForge — Code Daily. Build Reputation. Grow Together.</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0a0a0f;--surface:#12121a;--panel:#1a1a26;--border:rgba(255,255,255,0.07);
+  --accent:#7c5cfc;--green:#00e5a0;--orange:#ff6b35;--gold:#f5c842;--red:#ff4466;
+  --text:#e8e8f0;--muted:#8888aa;--dim:#4a4a6a;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--void);color:var(--text);overflow-x:hidden;font-size:14px;line-height:1.5}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+
+/* PAGES */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* SHARED */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;border:none;font-family:inherit}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:0.9}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.12)}.btn-ghost:hover{border-color:rgba(255,255,255,0.25)}
+.btn-green{background:var(--green);color:#000}
+.btn-lg{padding:14px 32px;font-size:16px;border-radius:12px}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;border:1px solid}
+.badge-purple{background:rgba(124,92,252,0.12);color:var(--accent);border-color:rgba(124,92,252,0.3)}
+.badge-green{background:rgba(0,229,160,0.1);color:var(--green);border-color:rgba(0,229,160,0.25)}
+.badge-gold{background:rgba(245,200,66,0.1);color:var(--gold);border-color:rgba(245,200,66,0.3)}
+.flex{display:flex;align-items:center}
+.f1{flex:1}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+.sm{font-size:12px}.xs{font-size:11px}.muted{color:var(--muted)}
+.prog{height:4px;background:var(--panel);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.6s}
+.divider{height:1px;background:var(--border);margin:16px 0}
+input,select,textarea{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--text);outline:none;width:100%;transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;color:var(--muted);margin-bottom:5px;display:block}
+.error{color:var(--red);font-size:11px;margin-top:4px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:60px;display:flex;align-items:center;gap:24px;background:rgba(10,10,15,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.nav-links{display:flex;gap:20px;margin:0 auto}
+.nav-link{color:var(--muted);font-size:13px;cursor:pointer;transition:color 0.15s}
+.nav-link:hover{color:var(--text)}
+.nav-actions{display:flex;gap:8px;margin-left:auto}
+
+/* TICKER */
+.ticker-wrap{background:var(--panel);border-bottom:1px solid var(--border);padding:7px 0;overflow:hidden;position:fixed;top:60px;left:0;right:0;z-index:99}
+.ticker-track{display:flex;gap:32px;animation:ticker 35s linear infinite;width:max-content;white-space:nowrap}
+.t-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.t-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* HERO */
+.hero{padding:160px 40px 80px;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(124,92,252,0.18) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.3);border-radius:100px;padding:6px 14px;font-size:11px;color:var(--accent);margin-bottom:28px}
+.pulse{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.5)}}
+.hero-title{font-size:clamp(40px,6vw,72px);font-weight:700;line-height:1.05;letter-spacing:-1.5px;margin-bottom:20px}
+.line1{color:var(--text)}
+.line2{background:linear-gradient(90deg,var(--accent),#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.line3{background:linear-gradient(90deg,var(--green),#00c27a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:18px;color:var(--muted);max-width:540px;margin:0 auto 40px;line-height:1.7}
+.hero-actions{display:flex;gap:12px;justify-content:center;margin-bottom:60px}
+.hero-social-proof{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:60px}
+.avatars-stack{display:flex}
+.av-sm{width:28px;height:28px;border-radius:50%;border:2px solid var(--void);margin-left:-8px;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:720px;margin:0 auto 80px}
+.stat-cell{background:var(--surface);padding:22px;text-align:center}
+.stat-num{font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+
+/* HEATMAP */
+.heatmap-section{max-width:800px;margin:0 auto 80px;text-align:left}
+.heatmap-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.hm-grid{display:grid;grid-template-columns:repeat(52,1fr);gap:2px}
+.hm-cell{aspect-ratio:1;border-radius:2px}
+.hm0{background:var(--panel)}.hm1{background:#1a3a2a}.hm2{background:#1f6b43}.hm3{background:#26a055}.hm4{background:var(--green)}
+
+/* LIVE BATTLES */
+.section{padding:80px 40px;max-width:1200px;margin:0 auto}
+.section-head{text-align:center;margin-bottom:48px}
+.section-tag{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-weight:600}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-0.5px;margin-bottom:12px}
+.section-sub{font-size:16px;color:var(--muted);max-width:480px;margin:0 auto}
+
+/* FEATURE GRID */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color 0.2s,transform 0.2s}
+.feature-card:hover{border-color:rgba(124,92,252,0.35);transform:translateY(-2px)}
+.feature-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.feature-title{font-size:15px;font-weight:600;margin-bottom:6px}
+.feature-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* LEAGUES STRIP */
+.leagues-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
+.league-pill{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;cursor:pointer;flex-shrink:0;transition:border-color 0.2s}
+.league-pill:hover{border-color:rgba(124,92,252,0.4)}
+.league-emoji{font-size:22px;margin-bottom:4px}
+.league-name{font-size:11px;font-weight:600;margin-bottom:2px}
+.league-count{font-size:10px;color:var(--muted)}
+
+/* LB PREVIEW */
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-size:14px;font-weight:700;width:24px;text-align:center}
+.av{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* BATTLE CARD */
+.battle-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+.vs-bar{height:6px;background:var(--dim);border-radius:3px;overflow:hidden;display:flex}
+.vs-a{height:100%;background:var(--accent);transition:width 0.5s}
+.vs-b{height:100%;background:var(--orange)}
+.live-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--red)}
+.live-dot{width:5px;height:5px;background:var(--red);border-radius:50%;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* COMM CARD */
+.comm-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:border-color 0.2s,transform 0.2s}
+.comm-card:hover{border-color:rgba(124,92,252,0.35);transform:translateY(-2px)}
+
+/* TRADING CARD */
+.tc{background:linear-gradient(135deg,#1a0d35,#0d1a35);border:1px solid rgba(124,92,252,0.4);border-radius:16px;padding:22px;width:210px;position:relative;overflow:hidden;flex-shrink:0}
+.tc-glow{position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:var(--accent);border-radius:50%;opacity:0.08;filter:blur(25px)}
+
+/* DARK SECTIONS */
+.section-dark{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+
+/* FOOTER */
+.footer{padding:48px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600}
+
+/* CTA SECTION */
+.cta-section{padding:100px 40px;text-align:center;background:linear-gradient(180deg,transparent,rgba(124,92,252,0.05))}
+.cta-title{font-size:clamp(32px,5vw,56px);font-weight:700;margin-bottom:14px;letter-spacing:-1px}
+.cta-sub{font-size:16px;color:var(--muted);margin-bottom:36px}
+
+/* SCROLL ANIMATIONS */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ====== AUTH PAGE ====== */
+#authPage{background:var(--void);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.auth-card{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:36px;width:420px;max-width:100%}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo-icon{width:48px;height:48px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px}
+.auth-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+.social-btn{width:100%;padding:10px;border-radius:10px;background:var(--surface);border:1px solid rgba(255,255,255,0.1);color:var(--text);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-size:13px;margin-bottom:8px;transition:border-color 0.15s;font-family:inherit}
+.social-btn:hover{border-color:rgba(255,255,255,0.25)}
+.or-divider{text-align:center;position:relative;margin:16px 0}
+.or-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+.or-divider span{position:relative;background:var(--panel);padding:0 12px;font-size:11px;color:var(--muted)}
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
+.auth-toggle span{color:var(--accent);cursor:pointer}
+.auth-tabs{display:flex;background:var(--surface);border-radius:10px;padding:3px;margin-bottom:20px}
+.auth-tab{flex:1;text-align:center;padding:7px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--muted);transition:all 0.15s}
+.auth-tab.active{background:var(--panel);color:var(--text);font-weight:500}
+
+/* ====== ONBOARDING ====== */
+#onboardPage{background:var(--void);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.ob-card{background:var(--panel);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:36px;width:540px;max-width:100%}
+.ob-step{display:none}.ob-step.active{display:block}
+.ob-progress{display:flex;gap:4px;margin-bottom:28px}
+.ob-prog-seg{flex:1;height:3px;border-radius:2px;background:var(--dim);transition:background 0.3s}
+.ob-prog-seg.done{background:var(--accent)}
+.ob-prog-seg.active{background:var(--accent);opacity:0.5}
+.ob-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.ob-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.choice-card{background:var(--surface);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;cursor:pointer;text-align:center;transition:all 0.15s}
+.choice-card:hover,.choice-card.selected{border-color:var(--accent);background:rgba(124,92,252,0.08)}
+.choice-emoji{font-size:28px;margin-bottom:8px}
+.choice-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.choice-desc{font-size:11px;color:var(--muted)}
+.skill-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.skill-chip{background:var(--surface);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;transition:all 0.15s}
+.skill-chip:hover,.skill-chip.selected{border-color:var(--accent);background:rgba(124,92,252,0.1);color:var(--accent)}
+.level-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.level-card{background:var(--surface);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:12px}
+.level-card:hover,.level-card.selected{border-color:var(--accent);background:rgba(124,92,252,0.08)}
+.roadmap-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.roadmap-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px}
+</style>
+</head>
+<body>
+
+<!-- ===================== LANDING PAGE ===================== -->
+<div id="landingPage" class="page active">
+
+  <!-- Fixed Nav -->
+  <nav class="nav">
+    <div class="logo">
+      <div class="logo-icon" style="font-size:16px;color:#fff">⚡</div>
+      CodeForge
+    </div>
+    <div class="nav-links">
+      <span class="nav-link">Compete</span>
+      <span class="nav-link">Learn</span>
+      <span class="nav-link">Communities</span>
+      <span class="nav-link">Careers</span>
+      <span class="nav-link">Mentors</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="showPage('authPage');setAuthMode('login')">Sign in</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('authPage');setAuthMode('signup')">Join free</button>
+    </div>
+  </nav>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="landingTicker"></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge"><span class="pulse"></span>Season 3 live · 48,291 developers competing now</div>
+    <div class="hero-title">
+      <div class="line1">Code daily.</div>
+      <div class="line2">Build reputation.</div>
+      <div class="line3">Grow together.</div>
+    </div>
+    <p class="hero-sub">The competitive developer universe where skills compound, ranks are earned, and inactivity has real consequences.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" onclick="showPage('authPage');setAuthMode('signup')">Start your journey — free</button>
+      <button class="btn btn-ghost btn-lg" onclick="document.getElementById('featuresSection').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+
+    <!-- Social proof -->
+    <div class="hero-social-proof">
+      <div class="avatars-stack">
+        <div class="av-sm" style="background:linear-gradient(135deg,#7c5cfc,#c084fc);margin-left:0">PK</div>
+        <div class="av-sm" style="background:linear-gradient(135deg,#2563eb,#60a5fa)">AR</div>
+        <div class="av-sm" style="background:linear-gradient(135deg,#00c27a,#00e5a0)">MD</div>
+        <div class="av-sm" style="background:linear-gradient(135deg,#ff6b35,#ffaa00)">SN</div>
+        <div class="av-sm" style="background:linear-gradient(135deg,#dc2626,#f87171)">KV</div>
+        <div class="av-sm" style="background:var(--dim);font-size:9px">+48k</div>
+      </div>
+      <span class="sm muted" style="margin-left:6px">Joined by <strong style="color:var(--text)">48,291 developers</strong> across 140 countries</span>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-cell"><div class="stat-num" style="color:var(--green)" id="statActive">12,847</div><div class="stat-lbl">Coding right now</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--accent)" id="statSolved">94,331</div><div class="stat-lbl">Problems solved today</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--orange)">2,194</div><div class="stat-lbl">Live battles</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--gold)">639</div><div class="stat-lbl">Communities active</div></div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="heatmap-section reveal">
+      <div class="heatmap-label">Global contribution activity — last 52 weeks across all 48,291 members</div>
+      <div class="hm-grid" id="landingHeatmap"></div>
+      <div class="flex" style="gap:6px;justify-content:flex-end;margin-top:8px">
+        <span class="xs muted">Less</span>
+        <div style="width:10px;height:10px;border-radius:2px;background:var(--panel)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:#1a3a2a"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:#26a055"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div>
+        <span class="xs muted">More</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section reveal" id="featuresSection">
+    <div class="section-head">
+      <div class="section-tag">Built different</div>
+      <div class="section-title">Not just another coding site</div>
+      <div class="section-sub">CodeForge combines the best of GitHub, LeetCode, Discord, LinkedIn, and Duolingo — into one living developer universe.</div>
+    </div>
+    <div class="feature-grid" id="featureGrid"></div>
+  </section>
+
+  <!-- Season Banner -->
+  <div class="section-dark">
+    <div class="section reveal" style="padding:60px 40px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;max-width:1100px;margin:0 auto">
+        <div>
+          <div class="section-tag">Season 3</div>
+          <div class="section-title" style="font-size:36px">The Siege of Nullpointer Ridge</div>
+          <div class="sm muted" style="margin:12px 0 20px;line-height:1.7">Every season tells a story. Climb the ranked ladder, unlock exclusive cosmetics, represent your community in Clan Wars, and cement your place in the Hall of Fame before the season ends.</div>
+          <div class="flex" style="gap:12px;margin-bottom:20px">
+            <div style="text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 20px">
+              <div style="font-size:22px;font-weight:700;color:var(--gold)" id="landCountdown">18d 04h 22m</div>
+              <div class="xs muted">Remaining</div>
+            </div>
+            <div style="text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 20px">
+              <div style="font-size:22px;font-weight:700;color:var(--green)">Top 100</div>
+              <div class="xs muted">Earn Legend Badge</div>
+            </div>
+            <div style="text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 20px">
+              <div style="font-size:22px;font-weight:700;color:var(--accent)">+50k FC</div>
+              <div class="xs muted">Season prizes</div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="showPage('authPage')">Enter Season 3</button>
+        </div>
+        <!-- League ladder visual -->
+        <div>
+          <div class="sm muted" style="margin-bottom:12px;text-align:center">Current season ladder</div>
+          <div id="leagueLadder"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Leaderboard preview -->
+  <section class="section reveal">
+    <div class="section-head">
+      <div class="section-tag">Leaderboard</div>
+      <div class="section-title">Where do you rank?</div>
+      <div class="section-sub">Every action affects your standing. Every day you skip gives someone else the edge.</div>
+    </div>
+    <div class="card" style="max-width:800px;margin:0 auto;padding:0;overflow:hidden">
+      <div id="lbPreview"></div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-ghost" onclick="showPage('authPage')">View full leaderboard →</button>
+    </div>
+  </section>
+
+  <!-- Live Battles preview -->
+  <div class="section-dark">
+    <section class="section reveal" style="padding:80px 40px">
+      <div class="section-head">
+        <div class="section-tag">Coding Battles</div>
+        <div class="section-title">Real-time 1v1 coding battles</div>
+        <div class="section-sub">Challenge anyone. Spectate live. Your rank is on the line every round.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto" id="battlePreview"></div>
+    </section>
+  </div>
+
+  <!-- Communities -->
+  <section class="section reveal">
+    <div class="section-head">
+      <div class="section-tag">Communities</div>
+      <div class="section-title">Your tribe is waiting</div>
+      <div class="section-sub">Join thousands of communities. Compete in Clan Wars. Rise together.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:1100px;margin:0 auto 24px" id="commPreview"></div>
+  </section>
+
+  <!-- Trading Cards -->
+  <div class="section-dark">
+    <section class="section reveal" style="padding:80px 40px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1000px;margin:0 auto">
+        <div>
+          <div class="section-tag">Developer Identity</div>
+          <div class="section-title" style="font-size:36px">Your trading card. Your legacy.</div>
+          <div class="sm muted" style="margin:12px 0 20px;line-height:1.7">Every developer on CodeForge gets a beautiful, shareable trading card that shows their rank, streak, power score, and achievements. Share it. Flex it. Earn it.</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+            <div class="flex" style="gap:10px"><span style="color:var(--green)">✓</span><span class="sm">Auto-generated from your platform activity</span></div>
+            <div class="flex" style="gap:10px"><span style="color:var(--green)">✓</span><span class="sm">Updates in real-time as you grow</span></div>
+            <div class="flex" style="gap:10px"><span style="color:var(--green)">✓</span><span class="sm">Shareable link + downloadable PNG</span></div>
+            <div class="flex" style="gap:10px"><span style="color:var(--green)">✓</span><span class="sm">Special designs for Legend-tier developers</span></div>
+          </div>
+          <button class="btn btn-primary" onclick="showPage('authPage')">Get your card</button>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap" id="tradingCardPreview"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Testimonials -->
+  <section class="section reveal">
+    <div class="section-head">
+      <div class="section-tag">Community voices</div>
+      <div class="section-title">Real developers, real impact</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1100px;margin:0 auto" id="testimonials"></div>
+  </section>
+
+  <!-- Final CTA -->
+  <div class="cta-section reveal">
+    <div class="cta-title">Your rank is<br>being claimed right now.</div>
+    <p class="cta-sub">Every minute you wait, someone else is grinding their streak, winning battles, and climbing the ladder.</p>
+    <div class="flex" style="gap:12px;justify-content:center;margin-bottom:20px">
+      <button class="btn btn-primary btn-lg" onclick="showPage('authPage');setAuthMode('signup')">Join CodeForge — free</button>
+      <button class="btn btn-ghost btn-lg" onclick="showPage('authPage');setAuthMode('login')">Sign in</button>
+    </div>
+    <p class="xs muted">No credit card. No trial limits. Just code.</p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo"><div class="logo-icon" style="font-size:14px;color:#fff">⚡</div>CodeForge</div>
+    <div class="flex" style="gap:24px;flex-wrap:wrap">
+      <span class="sm muted" style="cursor:pointer">About</span>
+      <span class="sm muted" style="cursor:pointer">Blog</span>
+      <span class="sm muted" style="cursor:pointer">Careers</span>
+      <span class="sm muted" style="cursor:pointer">Privacy</span>
+      <span class="sm muted" style="cursor:pointer">Terms</span>
+      <span class="sm muted" style="cursor:pointer">API</span>
+    </div>
+    <span class="xs muted">© 2026 CodeForge · Built by developers, for developers</span>
+  </footer>
+</div>
+
+<!-- ===================== AUTH PAGE ===================== -->
+<div id="authPage" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--void)">
+
+    <!-- Back -->
+    <button class="btn btn-ghost btn-sm" style="position:fixed;top:20px;left:20px" onclick="showPage('landingPage')">← Back</button>
+
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">⚡</div>
+        <div style="font-size:20px;font-weight:700">CodeForge</div>
+        <div class="xs muted" style="margin-top:4px">The developer arena</div>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="loginTab" onclick="setAuthMode('login')">Sign in</div>
+        <div class="auth-tab" id="signupTab" onclick="setAuthMode('signup')">Join free</div>
+      </div>
+
+      <!-- Social logins -->
+      <div id="authSocialBtns">
+        <button class="social-btn" onclick="doSocialAuth('GitHub')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Continue with GitHub
+        </button>
+        <button class="social-btn" onclick="doSocialAuth('Google')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <button class="social-btn" onclick="doSocialAuth('LinkedIn')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Continue with LinkedIn
+        </button>
+      </div>
+
+      <div class="or-divider"><span>or continue with email</span></div>
+
+      <!-- Login form -->
+      <div id="loginForm">
+        <div class="form-group">
+          <div class="form-label">Email or username</div>
+          <input type="text" placeholder="you@example.com" id="loginEmail">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Password</div>
+          <input type="password" placeholder="••••••••" id="loginPassword">
+        </div>
+        <div class="flex" style="justify-content:flex-end;margin-bottom:16px">
+          <span class="xs" style="color:var(--accent);cursor:pointer">Forgot password?</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:12px" onclick="doLogin()">Sign in</button>
+      </div>
+
+      <!-- Signup form -->
+      <div id="signupForm" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group"><div class="form-label">First name</div><input type="text" placeholder="Sujal" id="signupFirst"></div>
+          <div class="form-group"><div class="form-label">Last name</div><input type="text" placeholder="Khatri" id="signupLast"></div>
+        </div>
+        <div class="form-group"><div class="form-label">Email</div><input type="email" placeholder="sujal@example.com" id="signupEmail"></div>
+        <div class="form-group"><div class="form-label">Username</div><input type="text" placeholder="sujalkhatri" id="signupUser" oninput="checkUsername(this)">
+          <div class="xs" style="color:var(--green);margin-top:3px" id="userAvailMsg" style="display:none">✓ Username available</div>
+        </div>
+        <div class="form-group"><div class="form-label">Password</div>
+          <input type="password" placeholder="••••••••" id="signupPass" oninput="checkPassStrength(this.value)">
+          <div style="display:flex;gap:3px;margin-top:6px" id="passStrengthBar">
+            <div style="flex:1;height:3px;border-radius:2px;background:var(--dim)" id="ps1"></div>
+            <div style="flex:1;height:3px;border-radius:2px;background:var(--dim)" id="ps2"></div>
+            <div style="flex:1;height:3px;border-radius:2px;background:var(--dim)" id="ps3"></div>
+            <div style="flex:1;height:3px;border-radius:2px;background:var(--dim)" id="ps4"></div>
+          </div>
+          <div class="xs muted mt4" id="passStrengthLabel"></div>
+        </div>
+        <label class="flex" style="gap:8px;margin-bottom:16px;cursor:pointer">
+          <input type="checkbox" id="agreeTerms">
+          <span class="xs muted">I agree to the <span style="color:var(--accent)">Terms of Service</span> and <span style="color:var(--accent)">Privacy Policy</span></span>
+        </label>
+        <button class="btn btn-primary" style="width:100%;padding:12px" onclick="doSignup()">Create account</button>
+      </div>
+
+      <div class="auth-toggle" id="authToggleText">
+        Don't have an account? <span onclick="setAuthMode('signup')">Join free</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ONBOARDING ===================== -->
+<div id="onboardPage" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--void)">
+    <div class="ob-card">
+      <!-- Progress bar -->
+      <div class="ob-progress" id="obProgress">
+        <div class="ob-prog-seg active" id="obSeg0"></div>
+        <div class="ob-prog-seg" id="obSeg1"></div>
+        <div class="ob-prog-seg" id="obSeg2"></div>
+        <div class="ob-prog-seg" id="obSeg3"></div>
+        <div class="ob-prog-seg" id="obSeg4"></div>
+      </div>
+
+      <!-- Step 0: Role -->
+      <div class="ob-step active" id="obStep0">
+        <div class="ob-title">Welcome to CodeForge ⚡</div>
+        <div class="ob-sub">Let's personalize your experience. What best describes you?</div>
+        <div class="choice-grid">
+          <div class="choice-card" onclick="selectChoice(this,'role')">
+            <div class="choice-emoji">🎓</div>
+            <div class="choice-title">Student</div>
+            <div class="choice-desc">Learning to code, preparing for interviews, building skills</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'role')">
+            <div class="choice-emoji">💼</div>
+            <div class="choice-title">Professional</div>
+            <div class="choice-desc">Working developer looking to upskill and network</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'role')">
+            <div class="choice-emoji">🏆</div>
+            <div class="choice-title">Competitive</div>
+            <div class="choice-desc">Contest enthusiast aiming for top global rankings</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'role')">
+            <div class="choice-emoji">🎓</div>
+            <div class="choice-title">Mentor</div>
+            <div class="choice-desc">Experienced dev wanting to teach and give back</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="nextObStep()">Continue →</button>
+      </div>
+
+      <!-- Step 1: Languages -->
+      <div class="ob-step" id="obStep1">
+        <div class="ob-title">What's your stack?</div>
+        <div class="ob-sub">Pick the languages and domains you work with (select all that apply)</div>
+        <div class="skill-chips" id="langChips"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="nextObStep()">Continue →</button>
+      </div>
+
+      <!-- Step 2: Skill level -->
+      <div class="ob-step" id="obStep2">
+        <div class="ob-title">Honest self-assessment</div>
+        <div class="ob-sub">This helps us calibrate your starting rank and problem difficulty</div>
+        <div class="level-cards">
+          <div class="level-card" onclick="selectChoice(this,'level')">
+            <div style="font-size:22px">🌱</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:2px">Beginner</div>
+              <div class="xs muted">Just starting out. Arrays, basic loops, simple programs.</div>
+            </div>
+          </div>
+          <div class="level-card" onclick="selectChoice(this,'level')">
+            <div style="font-size:22px">🌿</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:2px">Intermediate</div>
+              <div class="xs muted">Can solve Easy–Medium LeetCode. Understanding DSA basics.</div>
+            </div>
+          </div>
+          <div class="level-card" onclick="selectChoice(this,'level')">
+            <div style="font-size:22px">🌳</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:2px">Advanced</div>
+              <div class="xs muted">Comfortable with Hard problems. Competitive programming experience.</div>
+            </div>
+          </div>
+          <div class="level-card" onclick="selectChoice(this,'level')">
+            <div style="font-size:22px">🏆</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;margin-bottom:2px">Expert</div>
+              <div class="xs muted">High contest ratings, ICPC/IOI background, DP / advanced graphs fluent.</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="nextObStep()">Continue →</button>
+      </div>
+
+      <!-- Step 3: Goals -->
+      <div class="ob-step" id="obStep3">
+        <div class="ob-title">What's your #1 goal?</div>
+        <div class="ob-sub">We'll tailor your roadmap around this</div>
+        <div class="choice-grid">
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">🎯</div>
+            <div class="choice-title">Crack FAANG</div>
+            <div class="choice-desc">Prepare for top-tier tech interviews</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">🏆</div>
+            <div class="choice-title">Win contests</div>
+            <div class="choice-desc">Reach Grandmaster or Legend rank</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">🌐</div>
+            <div class="choice-title">Open Source</div>
+            <div class="choice-desc">Contribute to major open source projects</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">📈</div>
+            <div class="choice-title">Build skills</div>
+            <div class="choice-desc">Systematically improve across all areas</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">🤝</div>
+            <div class="choice-title">Network</div>
+            <div class="choice-desc">Find collaborators, mentors, and teammates</div>
+          </div>
+          <div class="choice-card" onclick="selectChoice(this,'goal')">
+            <div class="choice-emoji">🎓</div>
+            <div class="choice-title">Mentor others</div>
+            <div class="choice-desc">Give back and build teaching reputation</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="nextObStep()">Continue →</button>
+      </div>
+
+      <!-- Step 4: Generated Roadmap -->
+      <div class="ob-step" id="obStep4">
+        <div class="flex" style="gap:8px;margin-bottom:6px">
+          <div style="width:28px;height:28px;border-radius:7px;background:rgba(124,92,252,0.2);border:1px solid rgba(124,92,252,0.4);display:flex;align-items:center;justify-content:center;font-size:14px">🤖</div>
+          <div class="ob-title" style="margin-bottom:0">Your personalized roadmap</div>
+        </div>
+        <div class="ob-sub">Sage AI built this based on your profile. It will adapt as you grow.</div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px" id="roadmapItems"></div>
+
+        <div class="card" style="background:rgba(124,92,252,0.08);border-color:rgba(124,92,252,0.3);margin-bottom:16px">
+          <div class="flex" style="gap:8px;margin-bottom:8px">
+            <span style="color:var(--accent)">🤖 Sage says:</span>
+          </div>
+          <div class="sm" style="line-height:1.7;color:var(--muted)">"Based on your background, I'd suggest starting with Graph problems — you're solid on arrays and trees, but graphs are your gap. 3 problems a day, 5 days a week. You'll be contest-ready in 6 weeks. Let's go!"</div>
+        </div>
+
+        <div class="flex" style="gap:8px">
+          <button class="btn btn-ghost" onclick="showPage('authPage')">← Go back</button>
+          <button class="btn btn-primary f1" style="padding:12px" onclick="window.location.href='index.html'">Enter CodeForge ⚡</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// PAGE ROUTING
+// ============================================================
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// TICKER
+// ============================================================
+(function(){
+  const items=[
+    {dot:'var(--green)',msg:'<b>Priya K.</b> solved Binary Tree Maximum Path Sum'},
+    {dot:'var(--accent)',msg:'<b>Rahul D.</b> hit a 365-day streak 🔥'},
+    {dot:'var(--gold)',msg:'<b>DSA India</b> leading Clan Wars with 10,242 problems'},
+    {dot:'var(--green)',msg:'<b>Arjun R.</b> reached Grandmaster rank'},
+    {dot:'var(--orange)',msg:'<b>Binary Warriors</b> won team battle vs Runtime Ninjas'},
+    {dot:'var(--accent)',msg:'<b>Ananya S.</b> published editorial with 241 upvotes'},
+    {dot:'var(--green)',msg:'<b>Meera D.</b> mentored 200th session — ⭐ Star Mentor badge'},
+    {dot:'var(--gold)',msg:'<b>Season 3</b> — 18 days left · Top 100 earn Legend badge'},
+    {dot:'var(--orange)',msg:'<b>Karan V.</b> won 1v1 battle in 8 minutes — Personal best'},
+    {dot:'var(--green)',msg:'<b>12,847</b> developers coding right now on CodeForge'},
+  ];
+  const all=[...items,...items];
+  const t=document.getElementById('landingTicker');
+  if(t) t.innerHTML=all.map(i=>`<span class="t-item"><span class="t-dot" style="background:${i.dot}"></span>${i.msg}</span>`).join('');
+})();
+
+// ============================================================
+// HEATMAP
+// ============================================================
+(function(){
+  const h=document.getElementById('landingHeatmap');
+  if(!h)return;
+  const w=[0,0,0,0,1,1,1,2,2,2,2,3,3,3,3,4,4,4,3,3,2,2,3,3,4,4,4,4,3,3,2,3,3,4,4,4,4,4,3,3,4,4,4,4,4,4,4,4,4,4,4,4];
+  for(let i=0;i<52;i++)for(let d=0;d<7;d++){
+    const c=document.createElement('div');
+    const base=w[i]+(Math.random()<0.25?1:0)-(d>4?1:0);
+    c.className='hm-cell hm'+Math.min(4,Math.max(0,Math.round(base)));
+    h.appendChild(c);
+  }
+})();
+
+// ============================================================
+// FEATURES
+// ============================================================
+(function(){
+  const features=[
+    {icon:'⚔️',color:'rgba(255,107,53,0.15)',title:'Live Coding Battles','desc':'Challenge anyone to real-time 1v1, team, or community battles with spectator mode and live chat.'},
+    {icon:'🏆',color:'rgba(245,200,66,0.12)',title:'Ranked Seasons','desc':'8-tier league system from Bronze to Legend. Ranks decay with inactivity. Every day counts.'},
+    {icon:'🔥',color:'rgba(255,107,53,0.12)',title:'Streak System','desc':'Daily streaks with freeze tokens, milestone badges, and rank protection rewards for consistency.'},
+    {icon:'🤖',color:'rgba(124,92,252,0.12)',title:'AI Coach — Sage','desc':'Personalized AI mentor that tracks your weak points, builds study plans, and predicts contest performance.'},
+    {icon:'🌐',color:'rgba(0,229,160,0.1)',title:'Communities & Clan Wars','desc':'Join topic communities, compete in weekly Clan Wars, and earn trophies for your team.'},
+    {icon:'📚',color:'rgba(96,165,250,0.12)',title:'Study Rooms','desc':'Live voice + video study spaces with collaborative code editor, whiteboard, and Pomodoro timer.'},
+    {icon:'🎯',color:'rgba(124,92,252,0.12)',title:'Career Quests','desc':'RPG-style career paths. Complete quests, earn XP, unlock "Backend Engineer" or "AI Engineer" titles.'},
+    {icon:'🧠',color:'rgba(192,132,252,0.12)',title:'Knowledge Vault','desc':'Every solved problem builds your personal searchable knowledge base with notes, patterns, and lessons.'},
+    {icon:'💼',color:'rgba(245,200,66,0.1)',title:'Recruiter Portal','desc':'Verified profiles let top companies discover you by rank, streak, open source work, and contest ratings.'},
+  ];
+  const fg=document.getElementById('featureGrid');
+  if(!fg)return;
+  features.forEach(f=>{
+    fg.innerHTML+=`<div class="feature-card">
+      <div class="feature-icon" style="background:${f.color}">${f.icon}</div>
+      <div class="feature-title">${f.title}</div>
+      <div class="feature-desc">${f.desc}</div>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// LEAGUE LADDER
+// ============================================================
+(function(){
+  const ll=document.getElementById('leagueLadder');
+  if(!ll)return;
+  const leagues=[
+    {emoji:'🌟',name:'Legend',count:12,color:'#f5c842',top:true},
+    {emoji:'👑',name:'Grandmaster',count:87,color:'#c084fc'},
+    {emoji:'⚔️',name:'Master',count:612,color:'#7c5cfc'},
+    {emoji:'🔷',name:'Diamond',count:1877,color:'#00e5ff'},
+    {emoji:'💎',name:'Platinum',count:4230,color:'#88ccff'},
+    {emoji:'🥇',name:'Gold',count:8112,color:'#f5c842'},
+    {emoji:'🥈',name:'Silver',count:12903,color:'#c0c0c8'},
+    {emoji:'🥉',name:'Bronze',count:18421,color:'#cd7f32'},
+  ];
+  ll.innerHTML=leagues.map((l,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--panel);border:1px solid ${l.top?'rgba(245,200,66,0.4)':'var(--border)'};margin-bottom:4px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='rgba(124,92,252,0.4)'" onmouseout="this.style.borderColor='${l.top?'rgba(245,200,66,0.4)':'var(--border)'}'">
+    <span style="font-size:16px">${l.emoji}</span>
+    <span style="font-size:13px;font-weight:600;color:${l.color};flex:1">${l.name}</span>
+    <span style="font-size:11px;color:var(--muted)">${l.count.toLocaleString()} devs</span>
+  </div>`).join('');
+})();
+
+// ============================================================
+// LB PREVIEW
+// ============================================================
+(function(){
+  const lb=document.getElementById('lbPreview');
+  if(!lb)return;
+  const users=[
+    {init:'PK',av:'linear-gradient(135deg,#d4a012,#f5c842)',name:'Priya K.',loc:'Mumbai',rank:'Legend',score:98441,streak:412,medal:'🥇'},
+    {init:'AR',av:'linear-gradient(135deg,#2563eb,#60a5fa)',name:'Arjun R.',loc:'Bangalore',rank:'Grandmaster',score:94120,streak:298,medal:'🥈'},
+    {init:'SN',av:'linear-gradient(135deg,#ff6b35,#ffaa00)',name:'Sujal N.',loc:'Pune',rank:'Grandmaster',score:91774,streak:201,medal:'🥉'},
+    {init:'MD',av:'linear-gradient(135deg,#00c27a,#00e5a0)',name:'Meera D.',loc:'Delhi',rank:'Diamond',score:87009,streak:155,medal:'#4'},
+    {init:'KV',av:'linear-gradient(135deg,#7c5cfc,#c084fc)',name:'Karan V.',loc:'Hyderabad',rank:'Diamond',score:82341,streak:122,medal:'#5'},
+  ];
+  const rankColors={Legend:'#f5c842',Grandmaster:'#c084fc',Diamond:'#00e5ff',Master:'#7c5cfc'};
+  users.forEach(u=>{
+    lb.innerHTML+=`<div class="lb-row">
+      <div class="lb-rank">${u.medal}</div>
+      <div class="av" style="background:${u.av}">${u.init}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${u.name}</div><div class="xs muted">${u.loc}</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="badge" style="background:rgba(0,0,0,0.2);color:${rankColors[u.rank]||'var(--muted)'};border-color:${rankColors[u.rank]||'var(--dim)'}40">${u.rank}</span>
+        <div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#7c5cfc">${u.score.toLocaleString()}</div><div class="xs" style="color:#ff6b35">🔥 ${u.streak}d</div></div>
+      </div>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// BATTLE PREVIEW
+// ============================================================
+(function(){
+  const bp=document.getElementById('battlePreview');
+  if(!bp)return;
+  [
+    {a:'Priya K.',b:'Arjun R.',prob:'Merge k Sorted Lists',diff:'Hard',pa:72,pb:28,time:'14m 31s'},
+    {a:'Sujal N.',b:'Meera D.',prob:'Word Ladder II',diff:'Hard',pa:55,pb:45,time:'22m 44s'},
+    {a:'Binary Warriors',b:'Runtime Ninjas',prob:'LRU Cache Cluster',diff:'Medium',pa:61,pb:39,time:'28m 07s',team:true},
+  ].forEach(b=>{
+    bp.innerHTML+=`<div class="battle-card">
+      <div class="flex" style="margin-bottom:8px;justify-content:space-between">
+        <span style="font-size:10px;color:${b.diff==='Hard'?'var(--red)':'var(--gold)'};font-weight:600;text-transform:uppercase;letter-spacing:0.5px">${b.team?'Team · ':'1v1 · '}${b.diff}</span>
+        <div class="live-badge"><div class="live-dot"></div>Live</div>
+      </div>
+      <div class="flex" style="justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600">${b.a}</div>
+        <span class="xs muted">vs</span>
+        <div style="font-size:13px;font-weight:600;text-align:right">${b.b}</div>
+      </div>
+      <div class="vs-bar" style="margin-bottom:6px"><div class="vs-a" style="width:${b.pa}%"></div><div class="vs-b" style="width:${b.pb}%"></div></div>
+      <div class="flex" style="justify-content:space-between">
+        <span class="xs muted">${b.prob}</span>
+        <span class="xs muted">${b.time} left</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px;font-size:11px" onclick="showPage('authPage')">👁 Spectate</button>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// COMMUNITY PREVIEW
+// ============================================================
+(function(){
+  const cp=document.getElementById('commPreview');
+  if(!cp)return;
+  [
+    {emoji:'🌿',name:'DSA India',members:'42.8k',heat:'🔥 Extremely Active',hpct:97,hc:'var(--orange)'},
+    {emoji:'🤖',name:'AI/ML Hub',members:'31.2k',heat:'🔥 Extremely Active',hpct:91,hc:'var(--orange)'},
+    {emoji:'🐍',name:'PyDevs Global',members:'27.3k',heat:'🔥 Extremely Active',hpct:88,hc:'var(--orange)'},
+    {emoji:'⚙️',name:'System Design',members:'18.5k',heat:'🟢 Active',hpct:74,hc:'var(--green)'},
+  ].forEach(c=>{
+    cp.innerHTML+=`<div class="comm-card" onclick="showPage('authPage')">
+      <div style="font-size:28px;margin-bottom:8px">${c.emoji}</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:2px">${c.name}</div>
+      <div class="xs muted" style="margin-bottom:10px">${c.members} members</div>
+      <div style="height:3px;background:var(--panel);border-radius:2px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:${c.hpct}%;background:${c.hc};border-radius:2px"></div></div>
+      <div class="xs" style="color:${c.hc}">${c.heat}</div>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// TRADING CARD PREVIEW
+// ============================================================
+(function(){
+  const tc=document.getElementById('tradingCardPreview');
+  if(!tc)return;
+  [
+    {init:'PK',name:'Priya K.',rank:'★ Legend',bg:'linear-gradient(135deg,#1a0d2e,#0d1a35)',score:'98.4k',streak:'412🔥',solved:'5,441',rating:'2,890',av:'linear-gradient(135deg,#d4a012,#f5c842)'},
+    {init:'AR',name:'Arjun R.',rank:'👑 Grandmaster',bg:'linear-gradient(135deg,#0d1a2e,#0a2040)',score:'94.1k',streak:'298🔥',solved:'3,812',rating:'2,841',av:'linear-gradient(135deg,#2563eb,#60a5fa)'},
+  ].forEach(u=>{
+    tc.innerHTML+=`<div class="tc">
+      <div class="tc-glow"></div>
+      <div style="position:relative;text-align:center">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">CodeForge · Season 3</div>
+        <div style="width:50px;height:50px;border-radius:12px;background:${u.av};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;margin:0 auto 8px">${u.init}</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">${u.name}</div>
+        <div style="font-size:10px;color:var(--gold);margin-bottom:10px">${u.rank}</div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px;text-align:center">
+          <div><div style="font-size:13px;font-weight:700;color:var(--accent)">${u.score}</div><div style="font-size:8px;color:var(--muted)">Power</div></div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--orange)">${u.streak}</div><div style="font-size:8px;color:var(--muted)">Streak</div></div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--green)">${u.solved}</div><div style="font-size:8px;color:var(--muted)">Solved</div></div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--gold)">${u.rating}</div><div style="font-size:8px;color:var(--muted)">Rating</div></div>
+        </div>
+      </div>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// TESTIMONIALS
+// ============================================================
+(function(){
+  const tm=document.getElementById('testimonials');
+  if(!tm)return;
+  [
+    {init:'MR',av:'linear-gradient(135deg,#7c5cfc,#c084fc)',name:'Manav Reddy',title:'Software Engineer @ Google',quote:'I went from struggling with Medium LeetCode to cracking Google in 4 months. The streak system kept me consistent when motivation failed.'},
+    {init:'AS',av:'linear-gradient(135deg,#00c27a,#00e5a0)',name:'Ayesha Sharma',title:'ML Engineer @ Meta',quote:'The AI coach identified my blind spots way faster than I could. Clan Wars with my community kept me competitive even on rough days.'},
+    {init:'RK',av:'linear-gradient(135deg,#2563eb,#60a5fa)',name:'Rahul Khatri',title:'Competitive Programmer — Grandmaster',quote:'CodeForge is the only platform where my rank actually means something. The decay system means you fight to keep what you earn.'},
+  ].forEach(t=>{
+    tm.innerHTML+=`<div class="card" style="padding:22px">
+      <div style="font-size:32px;color:var(--accent);opacity:0.4;line-height:1;margin-bottom:12px">"</div>
+      <div style="font-size:14px;line-height:1.7;color:var(--muted);margin-bottom:16px">${t.quote}</div>
+      <div class="flex" style="gap:10px">
+        <div style="width:36px;height:36px;border-radius:9px;background:${t.av};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">${t.init}</div>
+        <div><div style="font-size:13px;font-weight:600">${t.name}</div><div class="xs muted">${t.title}</div></div>
+      </div>
+    </div>`;
+  });
+})();
+
+// ============================================================
+// LIVE STAT COUNTER
+// ============================================================
+setInterval(()=>{
+  const sa=document.getElementById('statActive');
+  const ss=document.getElementById('statSolved');
+  if(sa){const v=parseInt(sa.textContent.replace(',',''));sa.textContent=(v+Math.floor(Math.random()*3)).toLocaleString();}
+  if(ss){const v=parseInt(ss.textContent.replace(',',''));ss.textContent=(v+Math.floor(Math.random()*8)).toLocaleString();}
+},3000);
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// ============================================================
+// AUTH
+// ============================================================
+function setAuthMode(mode){
+  const isLogin=mode==='login';
+  document.getElementById('loginTab').classList.toggle('active',isLogin);
+  document.getElementById('signupTab').classList.toggle('active',!isLogin);
+  document.getElementById('loginForm').style.display=isLogin?'block':'none';
+  document.getElementById('signupForm').style.display=isLogin?'none':'block';
+  document.getElementById('authToggleText').innerHTML=isLogin
+    ?'Don\'t have an account? <span onclick="setAuthMode(\'signup\')">Join free</span>'
+    :'Already have an account? <span onclick="setAuthMode(\'login\')">Sign in</span>';
+}
+
+function doSocialAuth(provider){
+  // Simulate OAuth
+  const btn=event.currentTarget;
+  const orig=btn.innerHTML;
+  btn.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Connecting…`;
+  setTimeout(()=>{showPage('onboardPage');initOnboarding();},1200);
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value;
+  const pass=document.getElementById('loginPassword').value;
+  if(!email||!pass){shakeEl('loginForm');return;}
+  window.location.href='index.html';
+}
+
+function doSignup(){
+  const first=document.getElementById('signupFirst').value;
+  const email=document.getElementById('signupEmail').value;
+  const pass=document.getElementById('signupPass').value;
+  const agreed=document.getElementById('agreeTerms').checked;
+  if(!first||!email||!pass||!agreed){shakeEl('signupForm');return;}
+  showPage('onboardPage');
+  initOnboarding();
+}
+
+function shakeEl(id){
+  const el=document.getElementById(id);
+  el.style.animation='shake 0.4s ease';
+  setTimeout(()=>el.style.animation='',500);
+}
+
+function checkUsername(el){
+  const v=el.value.trim();
+  const msg=document.getElementById('userAvailMsg');
+  if(v.length>3){
+    msg.style.display='block';
+    msg.textContent=v==='admin'||v==='root'?'✗ Username taken':'✓ Username available';
+    msg.style.color=v==='admin'||v==='root'?'var(--red)':'var(--green)';
+  } else msg.style.display='none';
+}
+
+function checkPassStrength(v){
+  const scores=[/[a-z]/.test(v),/[A-Z]/.test(v),/[0-9]/.test(v),v.length>=8];
+  const strength=scores.filter(Boolean).length;
+  const colors=['var(--red)','var(--orange)','var(--gold)','var(--green)'];
+  const labels=['Weak','Fair','Good','Strong'];
+  for(let i=1;i<=4;i++){
+    const s=document.getElementById('ps'+i);
+    if(s)s.style.background=i<=strength?colors[strength-1]:'var(--dim)';
+  }
+  const lbl=document.getElementById('passStrengthLabel');
+  if(lbl&&v.length>0)lbl.textContent=labels[strength-1]||'';
+}
+
+// shake animation
+const style=document.createElement('style');
+style.textContent='@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}';
+document.head.appendChild(style);
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+let obCurrentStep=0;
+const langs=['Python','JavaScript','C++','Java','Go','Rust','TypeScript','SQL','Kotlin','Swift','C#','PHP','Ruby','R','MATLAB'];
+const domains=['DSA','System Design','Frontend','Backend','AI/ML','DevOps','Cybersecurity','Cloud','Competitive Programming','Mobile Dev'];
+
+function initOnboarding(){
+  obCurrentStep=0;
+  document.querySelectorAll('.ob-step').forEach((s,i)=>s.classList.toggle('active',i===0));
+  updateObProgress();
+
+  // Fill lang chips
+  const lc=document.getElementById('langChips');
+  if(lc&&!lc.children.length){
+    [...langs,...domains].forEach(l=>{
+      lc.innerHTML+=`<div class="skill-chip" onclick="this.classList.toggle('selected')">${l}</div>`;
+    });
+  }
+}
+
+function nextObStep(){
+  obCurrentStep=Math.min(4,obCurrentStep+1);
+  document.querySelectorAll('.ob-step').forEach((s,i)=>s.classList.toggle('active',i===obCurrentStep));
+  updateObProgress();
+  if(obCurrentStep===4)buildRoadmap();
+}
+
+function updateObProgress(){
+  for(let i=0;i<5;i++){
+    const seg=document.getElementById('obSeg'+i);
+    if(!seg)continue;
+    seg.classList.remove('done','active');
+    if(i<obCurrentStep)seg.classList.add('done');
+    else if(i===obCurrentStep)seg.classList.add('active');
+  }
+}
+
+function selectChoice(el,group){
+  el.closest('.choice-grid,.level-cards').querySelectorAll('.choice-card,.level-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function buildRoadmap(){
+  const ri=document.getElementById('roadmapItems');
+  if(!ri||ri.children.length)return;
+  const steps=[
+    {week:'Week 1–2',topic:'Graph Fundamentals',tasks:['BFS, DFS, connected components','Topological sort','Dijkstra & Bellman-Ford'],color:'var(--accent)'},
+    {week:'Week 3–4',topic:'Dynamic Programming',tasks:['1D DP — classic patterns','2D DP — grid problems','DP on trees'],color:'var(--gold)'},
+    {week:'Week 5–6',topic:'Contest Prep',tasks:['3 mock contests','Time management drills','Error analysis with Sage'],color:'var(--green)'},
+  ];
+  steps.forEach(s=>{
+    ri.innerHTML+=`<div style="margin-bottom:12px">
+      <div class="flex" style="gap:8px;margin-bottom:6px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${s.color};margin-top:5px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">${s.week}</div>
+          <div style="font-size:13px;font-weight:600;color:${s.color}">${s.topic}</div>
+        </div>
+      </div>
+      ${s.tasks.map(t=>`<div class="flex" style="gap:8px;padding:4px 0 4px 16px"><span style="color:var(--dim)">◦</span><span class="xs muted">${t}</span></div>`).join('')}
+    </div>`;
+  });
+}
+</script>
+</body>
+</html>
