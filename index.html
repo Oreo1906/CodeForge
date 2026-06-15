@@ -3476,5 +3476,1252 @@ setTimeout(()=>{
 
 })(); // end IIFE
 </script>
+
+<!-- ============================================================
+     CODEFORGE — PATCH 2: ALL REMAINING SCREENS + FEATURES
+============================================================ -->
+<style>
+/* ── Mobile nav ── */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:200;padding:6px 0 10px}
+.mobile-nav-inner{display:flex;justify-content:space-around;align-items:center}
+.mn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:8px;cursor:pointer;color:var(--muted);transition:color 0.15s;min-width:48px}
+.mn-item.active{color:var(--accent)}
+.mn-item svg{width:20px;height:20px}
+.mn-label{font-size:9px;font-weight:500}
+.mn-badge{position:absolute;top:-2px;right:-4px;background:var(--red);color:#fff;border-radius:10px;padding:1px 4px;font-size:8px;font-weight:700}
+@media(max-width:800px){
+  .sidebar{display:none!important}
+  .mobile-nav{display:block}
+  .content{padding:16px;padding-bottom:80px}
+  .topbar{padding:0 12px}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr!important}
+  .feature-grid{grid-template-columns:1fr 1fr!important}
+  .leagues{grid-template-columns:repeat(4,1fr)!important}
+  [style*="grid-template-columns:1fr 320px"],[style*="grid-template-columns:1fr 280px"],[style*="grid-template-columns:1fr 300px"],[style*="grid-template-columns:1fr 340px"]{display:flex!important;flex-direction:column!important}
+  [style*="grid-template-columns:200px 1fr"]{display:flex!important;flex-direction:column!important}
+}
+
+/* ── Study Room Live ── */
+.room-grid{display:grid;grid-template-columns:1fr 280px;gap:0;height:calc(100vh - 100px);margin:-24px}
+.room-main{display:flex;flex-direction:column;border-right:1px solid var(--border)}
+.room-toolbar{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.room-code{flex:1;overflow:hidden;background:#0d0d16;font-family:'Fira Code',monospace;font-size:12px;line-height:1.7;padding:16px;overflow-y:auto;outline:none;color:var(--text)}
+.room-bottom{border-top:1px solid var(--border);padding:10px 14px;background:var(--surface);display:flex;align-items:center;gap:8px}
+.room-side{display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
+.room-side-tabs{display:flex;border-bottom:1px solid var(--border)}
+.room-side-tab{flex:1;padding:9px;font-size:11px;text-align:center;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent}
+.room-side-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.room-side-content{flex:1;overflow-y:auto;padding:12px}
+.participant-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.speaking-ring{box-shadow:0 0 0 2px var(--green)}
+.pomodoro-ring{width:80px;height:80px;position:relative;margin:0 auto 8px}
+
+/* ── Project collab ── */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;overflow-x:auto}
+.kanban-col{background:var(--panel2);border-radius:10px;padding:10px;min-height:200px}
+.kanban-col-hd{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kanban-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;cursor:grab}
+.kanban-card:active{cursor:grabbing;opacity:0.8}
+
+/* ── Mentor booking ── */
+.time-slot{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;text-align:center;transition:all 0.15s}
+.time-slot:hover,.time-slot.selected{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.time-slot.booked{opacity:0.4;cursor:not-allowed}
+.cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:12px}
+.cal-mini-hd{font-size:9px;color:var(--muted);padding:2px;font-weight:600}
+.cal-mini-day{padding:5px 2px;border-radius:5px;font-size:11px;cursor:pointer;transition:background 0.1s}
+.cal-mini-day:hover{background:var(--panel2)}
+.cal-mini-day.today{background:var(--accent-dim);color:var(--accent);font-weight:600}
+.cal-mini-day.selected{background:var(--accent);color:#fff}
+
+/* ── Seasons ── */
+.season-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s}
+.season-card:hover{border-color:rgba(124,92,252,0.4);transform:translateY(-2px)}
+.season-banner-img{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden}
+
+/* ── Achievement gallery ── */
+.ach-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all 0.15s;position:relative}
+.ach-card:hover{border-color:rgba(124,92,252,0.4);transform:translateY(-2px)}
+.ach-card.locked{opacity:0.45;filter:grayscale(0.5)}
+.ach-card.rare{border-color:rgba(245,200,66,0.35);background:rgba(245,200,66,0.03)}
+.ach-card.legendary{border-color:rgba(124,92,252,0.5);background:rgba(124,92,252,0.05)}
+
+/* ── User profile view ── */
+.profile-cover{height:120px;background:linear-gradient(135deg,rgba(124,92,252,0.3),rgba(0,229,160,0.15));border-radius:12px 12px 0 0;position:relative;margin:-16px -16px 0}
+
+/* ── Notification preferences ── */
+.notif-pref-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.toggle{width:36px;height:20px;background:var(--dim);border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left 0.2s}
+.toggle.on::after{left:19px}
+
+/* ── Whiteboard ── */
+#wbCanvas{background:#0d0d16;border-radius:8px;cursor:crosshair;touch-action:none}
+.wb-tool{width:32px;height:32px;border-radius:6px;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all 0.15s}
+.wb-tool:hover,.wb-tool.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+</style>
+
+<script>
+(function(){
+// ─────────────────────────────────────────────
+// MOBILE NAV
+// ─────────────────────────────────────────────
+const mobileNav=document.createElement('div');
+mobileNav.className='mobile-nav';
+mobileNav.innerHTML=`<div class="mobile-nav-inner">
+  <div class="mn-item active" id="mn-dashboard" onclick="navigate('dashboard');setMN('dashboard')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span class="mn-label">Home</span>
+  </div>
+  <div class="mn-item" id="mn-problems" onclick="navigate('problems');setMN('problems')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-3"/><path d="M18 2l4 4-10 10H8v-4L18 2z"/></svg>
+    <span class="mn-label">Problems</span>
+  </div>
+  <div class="mn-item" id="mn-battles" onclick="navigate('battles');setMN('battles')">
+    <div style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/></svg>
+      <span class="mn-badge">2</span>
+    </div>
+    <span class="mn-label">Battles</span>
+  </div>
+  <div class="mn-item" id="mn-communities" onclick="navigate('communities');setMN('communities')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="mn-label">Community</span>
+  </div>
+  <div class="mn-item" id="mn-profile" onclick="navigate('profile');setMN('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span class="mn-label">Profile</span>
+  </div>
+</div>`;
+document.querySelector('.app').appendChild(mobileNav);
+
+function setMN(id){
+  document.querySelectorAll('.mn-item').forEach(i=>i.classList.remove('active'));
+  const el=document.getElementById('mn-'+id);
+  if(el)el.classList.add('active');
+}
+window.setMN=setMN;
+
+
+// ─────────────────────────────────────────────
+// HELPER
+// ─────────────────────────────────────────────
+function addScreen(id,html){
+  if(document.getElementById('screen-'+id))return;
+  const div=document.createElement('div');
+  div.className='screen';
+  div.id='screen-'+id;
+  div.innerHTML=html;
+  document.getElementById('contentArea').appendChild(div);
+}
+function addSbItem(label,icon,screenId,badgeCls,badgeTxt){
+  if(document.querySelector(`[onclick="navigate('${screenId}')"]`))return;
+  const item=document.createElement('div');
+  item.className='sb-item';
+  item.setAttribute('onclick',`navigate('${screenId}')`);
+  item.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">${icon}</svg>${label}${badgeTxt?`<span class="sb-badge ${badgeCls||''}">${badgeTxt}</span>`:''}`;
+  const sbUser=document.querySelector('.sb-user');
+  sbUser.parentNode.insertBefore(item,sbUser);
+}
+
+// ─────────────────────────────────────────────
+// 1. PROJECTS SCREEN
+// ─────────────────────────────────────────────
+addScreen('projects',`
+<div class="section-hd mb16">
+  <div class="section-title">🚀 Project Collaboration</div>
+  <button class="btn btn-primary" onclick="openModal('createProjectModal')">+ New Project</button>
+</div>
+
+<div class="tabs" id="projTabs">
+  <div class="tab active" onclick="switchTab('projTabs','projTabContent',0)">My Projects</div>
+  <div class="tab" onclick="switchTab('projTabs','projTabContent',1)">Discover</div>
+  <div class="tab" onclick="switchTab('projTabs','projTabContent',2)">Kanban Board</div>
+  <div class="tab" onclick="switchTab('projTabs','projTabContent',3)">Milestones</div>
+</div>
+<div id="projTabContent">
+  <div class="tab-content active" id="projMine"></div>
+  <div class="tab-content" id="projDiscover"></div>
+  <div class="tab-content" id="projKanban"></div>
+  <div class="tab-content" id="projMilestones"></div>
+</div>
+
+<div id="createProjectModal" class="modal-overlay" onclick="if(event.target===this)closeModal('createProjectModal')">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title">New Project</div><div class="modal-close" onclick="closeModal('createProjectModal')">×</div></div>
+    <div class="form-group"><div class="form-label">Project name</div><input type="text" placeholder="e.g. CodeForge CLI, AI Tutor Bot"></div>
+    <div class="form-group"><div class="form-label">Description</div><textarea rows="2" placeholder="What are you building?"></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><div class="form-label">Tech stack</div><input type="text" placeholder="Python, React, Go…"></div>
+      <div class="form-group"><div class="form-label">Team size needed</div><select><option>Solo</option><option>2–3</option><option>4–5</option><option>Open</option></select></div>
+    </div>
+    <div class="form-group"><div class="form-label">Visibility</div>
+      <div class="flex gap6"><button class="btn btn-primary btn-sm">Public</button><button class="btn btn-ghost btn-sm">Private</button></div>
+    </div>
+    <div class="form-group"><div class="form-label">Tags</div><input type="text" placeholder="open-source, ai, web, mobile…"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeModal('createProjectModal');showToast('🚀','Project created! Share the link to recruit contributors.','green')">Create Project</button>
+  </div>
+</div>
+`);
+
+setTimeout(()=>{
+  // My Projects
+  const pm=document.getElementById('projMine');
+  if(pm&&!pm.children.length){
+    [{name:'CodeForge CLI',desc:'A command-line tool to practice problems without leaving terminal',stack:['Python','Click','Rich'],members:3,tasks:12,done:7,stars:142,status:'Active'},
+     {name:'AI Study Buddy',desc:'AI-powered flashcard and spaced repetition system for DSA',stack:['TypeScript','React','OpenAI'],members:2,tasks:8,done:3,stars:88,status:'Building'},
+    ].forEach(p=>{
+      pm.innerHTML+=`<div class="card mb12">
+        <div class="flex mb10">
+          <div style="width:44px;height:44px;border-radius:10px;background:var(--accent-dim);border:1px solid rgba(124,92,252,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🚀</div>
+          <div class="f1" style="margin-left:10px">
+            <div class="flex"><span class="sm bold">${p.name}</span><span class="badge badge-${p.status==='Active'?'green':'purple'}" style="margin-left:8px">${p.status}</span></div>
+            <div class="xs muted mt2">${p.desc}</div>
+          </div>
+          <div class="right"><span class="xs muted">⭐ ${p.stars}</span></div>
+        </div>
+        <div class="flex gap6 mb10">${p.stack.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        <div class="flex mb8" style="justify-content:space-between">
+          <span class="xs muted">Tasks: ${p.done}/${p.tasks} done</span>
+          <span class="xs muted">👥 ${p.members} contributors</span>
+        </div>
+        <div class="prog-bar mb10"><div class="prog-fill prog-green" style="width:${Math.round(p.done/p.tasks*100)}%"></div></div>
+        <div class="flex gap6">
+          <button class="btn btn-primary btn-xs" onclick="navigate('projects');switchTab('projTabs','projTabContent',2)">Kanban</button>
+          <button class="btn btn-ghost btn-xs" onclick="showToast('👥','Opening contributor list…','dim')">Contributors</button>
+          <button class="btn btn-ghost btn-xs" onclick="showToast('🔗','Project link copied!','green')">Share</button>
+        </div>
+      </div>`;
+    });
+  }
+
+  // Discover projects
+  const pd=document.getElementById('projDiscover');
+  if(pd&&!pd.children.length){
+    [{name:'DevFlow',desc:'Open-source project management tool built for developers',stack:['Go','Svelte'],stars:2140,open:3,owner:'Arjun R.'},
+     {name:'AlgoVisualizer',desc:'Beautiful algorithm visualization for learning and teaching DSA',stack:['React','D3'],stars:1820,open:2,owner:'Meera D.'},
+     {name:'ContestArchive',desc:'Historical contest problem repository with solutions and editorials',stack:['Python','FastAPI'],stars:940,open:5,owner:'Priya K.'},
+     {name:'MockInterviewAI',desc:'AI-driven mock interview platform with real-time feedback',stack:['Python','React'],stars:3200,open:4,owner:'Karan V.'},
+    ].forEach(p=>{
+      pd.innerHTML+=`<div class="card mb10">
+        <div class="flex mb8">
+          <div class="f1"><div class="sm bold">${p.name} <span class="xs muted">by ${p.owner}</span></div><div class="xs muted mt2">${p.desc}</div></div>
+          <span class="xs muted" style="margin-left:10px">⭐ ${p.stars.toLocaleString()}</span>
+        </div>
+        <div class="flex gap4 mb8">${p.stack.map(s=>`<span class="tag">${s}</span>`).join('')}<span class="badge badge-green" style="margin-left:auto">${p.open} open roles</span></div>
+        <div class="flex gap6">
+          <button class="btn btn-primary btn-xs" onclick="showToast('📩','Application sent! The project owner will review.','green')">Apply to contribute</button>
+          <button class="btn btn-ghost btn-xs" onclick="showToast('⭐','Starred!','gold')">Star</button>
+        </div>
+      </div>`;
+    });
+  }
+
+  // Kanban
+  const pk=document.getElementById('projKanban');
+  if(pk&&!pk.innerHTML){
+    const cols=[
+      {title:'Backlog',color:'var(--dim)',cards:[{title:'Add offline mode',label:'Feature',assign:'SK'},{title:'Improve error messages',label:'UX',assign:'—'}]},
+      {title:'In Progress',color:'var(--accent)',cards:[{title:'Build CLI parser',label:'Core',assign:'SK'},{title:'Write README',label:'Docs',assign:'SK'}]},
+      {title:'Review',color:'var(--gold)',cards:[{title:'Add color themes',label:'UI',assign:'SK'}]},
+      {title:'Done',color:'var(--green)',cards:[{title:'Project scaffold',label:'Core',assign:'SK'},{title:'Basic problem fetch',label:'Core',assign:'SK'},{title:'Auth module',label:'Core',assign:'SK'}]},
+    ];
+    pk.innerHTML=`<div class="kanban">${cols.map(col=>`
+      <div class="kanban-col">
+        <div class="kanban-col-hd"><span style="color:${col.color}">${col.title}</span><span class="badge badge-dim">${col.cards.length}</span></div>
+        ${col.cards.map(c=>`<div class="kanban-card" draggable="true">
+          <div class="xs bold mb4">${c.title}</div>
+          <div class="flex" style="justify-content:space-between"><span class="tag" style="font-size:10px">${c.label}</span><span class="xs muted">${c.assign}</span></div>
+        </div>`).join('')}
+        <button class="btn btn-ghost btn-xs" style="width:100%;margin-top:6px;font-size:11px" onclick="showToast('✓','Task added!','green')">+ Add task</button>
+      </div>`).join('')}</div>`;
+  }
+
+  // Milestones
+  const pml=document.getElementById('projMilestones');
+  if(pml&&!pml.innerHTML){
+    pml.innerHTML=`<div class="card">
+      <div class="section-hd mb12"><div class="section-title">CodeForge CLI — Milestones</div><button class="btn btn-primary btn-xs" onclick="showToast('✓','Milestone added!','green')">+ Add milestone</button></div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+      ${[{name:'v0.1 — Core scaffold',due:'Jun 5',done:true,tasks:'5/5'},
+         {name:'v0.2 — Problem fetching + solve',due:'Jun 15',done:true,tasks:'4/4'},
+         {name:'v0.3 — Offline cache + themes',due:'Jun 28',done:false,tasks:'2/6'},
+         {name:'v1.0 — Public release',due:'Jul 15',done:false,tasks:'0/8'},
+        ].map(m=>`<div class="card-sm flex">
+          <div style="width:20px;height:20px;border-radius:50%;background:${m.done?'var(--green-dim)':'var(--panel2)'};border:2px solid ${m.done?'var(--green)':'var(--dim)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            ${m.done?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+          </div>
+          <div class="f1" style="margin-left:10px">
+            <div class="sm bold">${m.name}</div>
+            <div class="xs muted">Due ${m.due} · ${m.tasks} tasks</div>
+          </div>
+          <span class="badge ${m.done?'badge-green':'badge-dim'}">${m.done?'Complete':'In progress'}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+},100);
+
+addSbItem('Projects','<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>','projects','','');
+
+
+// ─────────────────────────────────────────────
+// 2. STUDY ROOM LIVE INTERIOR
+// ─────────────────────────────────────────────
+addScreen('studyroom-live',`
+<div class="room-grid">
+  <!-- Main area -->
+  <div class="room-main">
+    <div class="room-toolbar">
+      <div style="font-size:14px;font-weight:600">📚 DP Marathon</div>
+      <div class="live-badge" style="margin-left:8px"><div class="live-dot"></div>Live · 6 in room</div>
+      <div class="flex gap6" style="margin-left:auto">
+        <button class="btn btn-ghost btn-xs" onclick="toggleWB()">🖊 Whiteboard</button>
+        <button class="btn btn-ghost btn-xs" onclick="document.getElementById('pomodoroModal').classList.add('open')">🍅 Pomodoro</button>
+        <button class="btn btn-ghost btn-xs" onclick="showToast('🖥️','Screen sharing started…','dim')">🖥 Share screen</button>
+        <button class="btn btn-danger btn-xs" onclick="navigate('studyrooms');showToast('✓','Left the room','dim')">Leave</button>
+      </div>
+    </div>
+
+    <!-- Collab code or whiteboard -->
+    <div id="roomCodeWrap" class="room-code" contenteditable="true" spellcheck="false" style="flex:1">
+<span style="color:#c084fc">class</span> <span style="color:#60a5fa">Solution</span>:<br>
+&nbsp;&nbsp;<span style="color:#c084fc">def</span> <span style="color:#60a5fa">coinChange</span>(<span style="color:var(--text)">self</span>, coins, amount):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4a4a6a"># Classic DP — bottom up</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dp = [float(<span style="color:#f5c842">'inf'</span>)] * (amount + <span style="color:#f5c842">1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dp[<span style="color:#f5c842">0</span>] = <span style="color:#f5c842">0</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">for</span> coin <span style="color:#c084fc">in</span> coins:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">for</span> x <span style="color:#c084fc">in</span> <span style="color:#60a5fa">range</span>(coin, amount + <span style="color:#f5c842">1</span>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp[x] = <span style="color:#60a5fa">min</span>(dp[x], dp[x - coin] + <span style="color:#f5c842">1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc">return</span> dp[amount] <span style="color:#c084fc">if</span> dp[amount] != float(<span style="color:#f5c842">'inf'</span>) <span style="color:#c084fc">else</span> -<span style="color:#f5c842">1</span>
+    </div>
+
+    <!-- Whiteboard (hidden by default) -->
+    <div id="roomWBWrap" style="display:none;flex:1;padding:12px;flex-direction:column;gap:8px">
+      <div class="flex gap6">
+        ${['✏️','📐','⭕','▭','→','🧹'].map((t,i)=>`<div class="wb-tool ${i===0?'active':''}" onclick="setWBTool(this,'${['pen','line','circle','rect','arrow','eraser'][i]}')">${t}</div>`).join('')}
+        <input type="color" value="#00e5a0" id="wbColor" style="width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:none;cursor:pointer;padding:2px">
+        <input type="range" min="1" max="12" value="2" id="wbSize" style="width:80px">
+        <button class="btn btn-ghost btn-xs" style="margin-left:auto" onclick="clearWB()">Clear</button>
+      </div>
+      <canvas id="wbCanvas" style="width:100%;flex:1;min-height:300px"></canvas>
+    </div>
+
+    <div class="room-bottom">
+      <div class="flex gap6">
+        <button class="btn btn-ghost btn-xs" id="micBtn" onclick="toggleMic(this)">🎤 Mute</button>
+        <button class="btn btn-ghost btn-xs" id="camBtn" onclick="toggleCam(this)">📹 Cam off</button>
+      </div>
+      <input type="text" placeholder="Send a message to the room…" id="roomMsgInput" style="flex:1;margin:0 8px;height:32px;padding:5px 10px" onkeydown="if(event.key==='Enter')sendRoomMsg()">
+      <button class="btn btn-primary btn-xs" onclick="sendRoomMsg()">Send</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="room-side">
+    <div class="room-side-tabs">
+      <div class="room-side-tab active" onclick="setRoomTab(this,0)">Participants</div>
+      <div class="room-side-tab" onclick="setRoomTab(this,1)">Chat</div>
+      <div class="room-side-tab" onclick="setRoomTab(this,2)">Problems</div>
+    </div>
+    <div class="room-side-content" id="roomSideContent0">
+      <div id="roomParticipants"></div>
+    </div>
+    <div class="room-side-content" id="roomSideContent1" style="display:none;flex-direction:column;height:100%">
+      <div style="flex:1;overflow-y:auto" id="roomChatMsgs"></div>
+    </div>
+    <div class="room-side-content" id="roomSideContent2" style="display:none">
+      <div id="roomProblemList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Pomodoro modal -->
+<div id="pomodoroModal" class="modal-overlay" onclick="if(event.target===this)closeModal('pomodoroModal')">
+  <div class="modal" style="width:320px;text-align:center">
+    <div class="modal-hd"><div class="modal-title">🍅 Pomodoro Timer</div><div class="modal-close" onclick="closeModal('pomodoroModal')">×</div></div>
+    <div style="width:110px;height:110px;border-radius:50%;border:4px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <div style="font-size:28px;font-weight:700;font-variant-numeric:tabular-nums" id="pomodoroDisplay">25:00</div>
+    </div>
+    <div class="flex gap6 mb12" style="justify-content:center">
+      <button class="btn btn-primary btn-sm" id="pomodoroBtn" onclick="togglePomodoro()">▶ Start</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetPomodoro()">↺ Reset</button>
+    </div>
+    <div class="flex gap6" style="justify-content:center">
+      <button class="btn btn-ghost btn-xs" onclick="setPomodoroTime(25)">25m</button>
+      <button class="btn btn-ghost btn-xs" onclick="setPomodoroTime(50)">50m</button>
+      <button class="btn btn-ghost btn-xs" onclick="setPomodoroTime(5)">5m break</button>
+    </div>
+    <div class="xs muted mt12">Round 1 of 4 · 0 completed today</div>
+  </div>
+</div>
+`);
+
+// Study room live init
+setTimeout(()=>{
+  const rp=document.getElementById('roomParticipants');
+  if(rp&&!rp.children.length){
+    [{init:'SK',av:'av-purple',name:'You (Sujal K.)',role:'Host',mic:true,speaking:true},
+     {init:'PK',av:'av-gold',name:'Priya K.',role:'',mic:true,speaking:false},
+     {init:'MD',av:'av-green',name:'Meera D.',role:'',mic:false,speaking:false},
+     {init:'AR',av:'av-blue',name:'Arjun R.',role:'',mic:true,speaking:false},
+     {init:'KV',av:'av-purple',name:'Karan V.',role:'',mic:false,speaking:false},
+     {init:'AS',av:'av-red',name:'Ananya S.',role:'',mic:true,speaking:false},
+    ].forEach(p=>{
+      rp.innerHTML+=`<div class="participant-row">
+        <div class="avatar av32 ${p.av} ${p.speaking?'speaking-ring':''}">${p.init}</div>
+        <div class="f1" style="margin-left:8px">
+          <div class="xs bold">${p.name}</div>
+          ${p.role?`<span class="xs muted">${p.role}</span>`:''}
+        </div>
+        <div class="flex gap4">
+          <span style="font-size:12px">${p.mic?'🎤':'🔇'}</span>
+          ${p.speaking?'<div class="live-dot"></div>':''}
+        </div>
+      </div>`;
+    });
+  }
+
+  const rc=document.getElementById('roomChatMsgs');
+  if(rc&&!rc.innerHTML){
+    [
+      {init:'PK',av:'av-gold',name:'Priya K.',msg:'Anyone solved Coin Change with top-down? Sharing my memo approach'},
+      {init:'AR',av:'av-blue',name:'Arjun R.',msg:'Bottom-up is cleaner here — O(n*amount) both but BU avoids recursion stack'},
+      {init:'SK',av:'av-purple',name:'You',msg:'Agreed. Also the edge case when amount=0 trips people up'},
+    ].forEach(m=>{
+      rc.innerHTML+=`<div class="flex gap6 mb8" style="align-items:flex-start">
+        <div class="avatar av32 ${m.av}">${m.init}</div>
+        <div><div class="xs bold mb2">${m.name}</div><div class="sm" style="background:var(--panel2);padding:7px 10px;border-radius:8px">${m.msg}</div></div>
+      </div>`;
+    });
+  }
+
+  const rpl=document.getElementById('roomProblemList');
+  if(rpl&&!rpl.innerHTML){
+    rpl.innerHTML=`<div class="xs bold mb8" style="color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Session problems</div>`;
+    [{id:322,title:'Coin Change',diff:'Medium',status:'solving'},{id:518,title:'Coin Change II',diff:'Medium',status:'queued'},{id:70,title:'Climbing Stairs',diff:'Easy',status:'done'}].forEach(p=>{
+      rpl.innerHTML+=`<div class="card-sm mb6">
+        <div class="flex">
+          <span class="${p.status==='done'?'diff-easy':p.status==='solving'?'diff-med':'muted'} xs" style="margin-right:8px">${p.status==='done'?'✓':p.status==='solving'?'▶':'○'}</span>
+          <div class="f1"><div class="xs bold">${p.id}. ${p.title}</div></div>
+          <span class="badge badge-${p.diff==='Easy'?'green':'gold'}">${p.diff}</span>
+        </div>
+      </div>`;
+    });
+    rpl.innerHTML+=`<button class="btn btn-ghost btn-xs" style="width:100%;margin-top:6px" onclick="showToast('✓','Problem added to session!','green')">+ Add problem</button>`;
+  }
+},150);
+
+function setRoomTab(el,idx){
+  el.parentElement.querySelectorAll('.room-side-tab').forEach((t,i)=>{
+    t.classList.toggle('active',i===idx);
+    const c=document.getElementById('roomSideContent'+i);
+    if(c)c.style.display=i===idx?'block':'none';
+  });
+}
+window.setRoomTab=setRoomTab;
+
+function sendRoomMsg(){
+  const inp=document.getElementById('roomMsgInput');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  const rc=document.getElementById('roomChatMsgs');
+  if(rc){
+    rc.innerHTML+=`<div class="flex gap6 mb8" style="align-items:flex-start">
+      <div class="avatar av32 av-purple">SK</div>
+      <div><div class="xs bold mb2">You</div><div class="sm" style="background:var(--panel2);padding:7px 10px;border-radius:8px">${msg}</div></div>
+    </div>`;
+    rc.scrollTop=rc.scrollHeight;
+  }
+  inp.value='';
+  setRoomTab(document.querySelector('.room-side-tab:nth-child(2)'),1);
+}
+window.sendRoomMsg=sendRoomMsg;
+
+function toggleMic(btn){btn.textContent=btn.textContent.includes('Mute')?'🎤 Unmute':'🎤 Mute';}
+function toggleCam(btn){btn.textContent=btn.textContent.includes('off')?'📹 Cam on':'📹 Cam off';}
+window.toggleMic=toggleMic;window.toggleCam=toggleCam;
+
+function toggleWB(){
+  const c=document.getElementById('roomCodeWrap');
+  const w=document.getElementById('roomWBWrap');
+  const showing=w.style.display!=='none';
+  c.style.display=showing?'block':'none';
+  w.style.display=showing?'none':'flex';
+  if(!showing)initWB();
+}
+window.toggleWB=toggleWB;
+
+// ── Whiteboard
+let wbDrawing=false,wbCtx=null,wbTool='pen',wbLast={x:0,y:0};
+function initWB(){
+  const canvas=document.getElementById('wbCanvas');
+  if(!canvas||canvas._init)return;
+  canvas._init=true;
+  canvas.width=canvas.offsetWidth||700;
+  canvas.height=canvas.offsetHeight||300;
+  wbCtx=canvas.getContext('2d');
+  wbCtx.fillStyle='#0d0d16';wbCtx.fillRect(0,0,canvas.width,canvas.height);
+  const getPos=(e)=>{const r=canvas.getBoundingClientRect();const cl=e.touches?e.touches[0]:e;return{x:(cl.clientX-r.left)*(canvas.width/r.width),y:(cl.clientY-r.top)*(canvas.height/r.height)};};
+  canvas.addEventListener('mousedown',e=>{wbDrawing=true;wbLast=getPos(e);wbCtx.beginPath();wbCtx.moveTo(wbLast.x,wbLast.y);});
+  canvas.addEventListener('mousemove',e=>{
+    if(!wbDrawing)return;
+    const p=getPos(e);
+    wbCtx.strokeStyle=document.getElementById('wbColor')?.value||'#00e5a0';
+    wbCtx.lineWidth=parseInt(document.getElementById('wbSize')?.value||2);
+    wbCtx.lineCap='round';
+    if(wbTool==='pen'||wbTool==='eraser'){
+      if(wbTool==='eraser')wbCtx.strokeStyle='#0d0d16';
+      wbCtx.lineTo(p.x,p.y);wbCtx.stroke();
+    }
+    wbLast=p;
+  });
+  canvas.addEventListener('mouseup',()=>wbDrawing=false);
+  canvas.addEventListener('mouseleave',()=>wbDrawing=false);
+}
+function clearWB(){if(wbCtx){const c=document.getElementById('wbCanvas');wbCtx.fillStyle='#0d0d16';wbCtx.fillRect(0,0,c.width,c.height);}}
+function setWBTool(btn,tool){document.querySelectorAll('.wb-tool').forEach(b=>b.classList.remove('active'));btn.classList.add('active');wbTool=tool;}
+window.clearWB=clearWB;window.setWBTool=setWBTool;window.initWB=initWB;
+
+// ── Pomodoro
+let pomSecs=25*60,pomRunning=false,pomInterval=null;
+function setPomodoroTime(m){pomSecs=m*60;resetPomodoro();}
+function togglePomodoro(){
+  pomRunning=!pomRunning;
+  const btn=document.getElementById('pomodoroBtn');
+  if(btn)btn.textContent=pomRunning?'⏸ Pause':'▶ Start';
+  if(pomRunning){
+    pomInterval=setInterval(()=>{
+      pomSecs--;
+      const d=document.getElementById('pomodoroDisplay');
+      if(d)d.textContent=`${String(Math.floor(pomSecs/60)).padStart(2,'0')}:${String(pomSecs%60).padStart(2,'0')}`;
+      if(pomSecs<=0){clearInterval(pomInterval);pomRunning=false;if(btn)btn.textContent='▶ Start';showToast('🍅','Pomodoro complete! Take a 5-minute break.','green');}
+    },1000);
+  } else clearInterval(pomInterval);
+}
+function resetPomodoro(){
+  clearInterval(pomInterval);pomRunning=false;
+  const d=document.getElementById('pomodoroDisplay');
+  const btn=document.getElementById('pomodoroBtn');
+  if(d)d.textContent=`${String(Math.floor(pomSecs/60)).padStart(2,'0')}:00`;
+  if(btn)btn.textContent='▶ Start';
+}
+window.setPomodoroTime=setPomodoroTime;window.togglePomodoro=togglePomodoro;window.resetPomodoro=resetPomodoro;
+
+addSbItem('Live Study Room','<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>','studyroom-live','green','Live');
+
+
+// ─────────────────────────────────────────────
+// 3. MENTOR BOOKING FULL SCREEN
+// ─────────────────────────────────────────────
+addScreen('mentor-booking',`
+<div style="display:grid;grid-template-columns:1fr 320px;gap:20px">
+  <div>
+    <!-- Mentor header -->
+    <div class="card mb16" style="background:linear-gradient(135deg,rgba(124,92,252,0.1),transparent);border-color:rgba(124,92,252,0.3)">
+      <div class="flex mb12" style="gap:14px">
+        <div class="avatar av64 av-gold">PK</div>
+        <div class="f1">
+          <div style="font-size:18px;font-weight:700;margin-bottom:2px">Priya K. <span class="badge badge-gold" style="font-size:10px">★ Legend</span></div>
+          <div class="xs muted mb6">Full Stack Developer · DSA Expert · Competitive Programmer</div>
+          <div class="flex gap8 mb6">
+            <span class="xs" style="color:var(--gold)">★★★★★ 4.9</span>
+            <span class="xs muted">194 sessions</span>
+            <span class="xs muted">186 reviews</span>
+          </div>
+          <div class="flex gap6">
+            <span class="tag">DSA</span><span class="tag">System Design</span><span class="tag">Competitive Programming</span><span class="tag">Python</span><span class="tag">C++</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:20px;font-weight:700;color:var(--green)">Free</div>
+          <div class="xs muted">Community mentorship</div>
+        </div>
+      </div>
+      <div class="sm muted" style="line-height:1.7">
+        "I've helped 194 developers crack FAANG, reach Grandmaster, and navigate their careers. My sessions focus on systematic problem-solving frameworks, not just giving you the answer. I want you to walk away understanding the pattern, not just the solution."
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card mb16">
+      <div class="section-hd mb12"><div class="section-title">Pick a date</div><div class="xs muted" id="selectedDateLabel">Select a date below</div></div>
+      <div class="flex mb10" style="justify-content:space-between">
+        <button class="btn btn-ghost btn-xs" onclick="changeMonth(-1)">← Prev</button>
+        <div class="sm bold" id="calMonthLabel">June 2026</div>
+        <button class="btn btn-ghost btn-xs" onclick="changeMonth(1)">Next →</button>
+      </div>
+      <div class="cal-mini" id="bookingCalendar"></div>
+    </div>
+
+    <!-- Time slots -->
+    <div class="card mb16">
+      <div class="section-hd mb12"><div class="section-title">Available time slots</div><div class="xs muted">All times in IST</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="timeSlots"></div>
+    </div>
+
+    <!-- Session type -->
+    <div class="card mb16">
+      <div class="section-hd mb12"><div class="section-title">Session type</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px" id="sessionTypes"></div>
+    </div>
+
+    <!-- Notes -->
+    <div class="card mb16">
+      <div class="section-hd mb8"><div class="section-title">Message to mentor (optional)</div></div>
+      <textarea rows="3" placeholder="Tell Priya what you want to focus on, where you're stuck, or any context that helps her prepare…"></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%" onclick="confirmBooking()">Confirm booking</button>
+  </div>
+
+  <!-- Right: summary + reviews -->
+  <div>
+    <div class="card mb12" id="bookingSummary" style="border-color:rgba(124,92,252,0.3)">
+      <div class="section-hd mb10"><div class="section-title">Booking summary</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="summaryItems">
+        <div class="flex"><span class="xs muted f1">Mentor</span><span class="xs bold">Priya K.</span></div>
+        <div class="flex"><span class="xs muted f1">Date</span><span class="xs bold" id="sumDate">—</span></div>
+        <div class="flex"><span class="xs muted f1">Time</span><span class="xs bold" id="sumTime">—</span></div>
+        <div class="flex"><span class="xs muted f1">Duration</span><span class="xs bold" id="sumDur">—</span></div>
+        <div class="flex"><span class="xs muted f1">Session type</span><span class="xs bold" id="sumType">—</span></div>
+        <div class="divider" style="margin:4px 0"></div>
+        <div class="flex"><span class="xs muted f1">Cost</span><span class="xs bold" style="color:var(--green)">Free</span></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="confirmBooking()">Book session</button>
+    </div>
+
+    <div class="card mb12">
+      <div class="section-hd mb10"><div class="section-title">Office hours</div></div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${['Mon–Fri','Sat','Sun'].map((d,i)=>`<div class="flex"><span class="xs muted f1">${d}</span><span class="xs">${i===2?'Unavailable':'7–9 PM IST'}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd mb10"><div class="section-title">Recent reviews</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${[{init:'MD',av:'av-green',name:'Meera D.',rating:5,text:'Priya broke down Dijkstra in a way no YouTube video ever did. Booked 3 sessions already.'},
+           {init:'KV',av:'av-purple',name:'Karan V.',rating:5,text:'Got my Google offer after 4 sessions. She knows exactly what interviewers look for.'},
+           {init:'AS',av:'av-red',name:'Ananya S.',rating:4,text:'Great session on system design. Would have loved 90 min instead of 60.'},
+          ].map(r=>`<div>
+            <div class="flex gap6 mb4">
+              <div class="avatar av32 ${r.av}">${r.init}</div>
+              <div class="f1"><div class="xs bold">${r.name}</div><div style="color:var(--gold);font-size:11px">${'★'.repeat(r.rating)}</div></div>
+            </div>
+            <div class="xs muted">${r.text}</div>
+          </div>`).join('<div class="divider"></div>')}
+      </div>
+    </div>
+  </div>
+</div>
+`);
+
+// Booking calendar + slots init
+let bookingMonth=5,bookingYear=2026,selectedBookDate=null,selectedSlot=null,selectedSessionType=null;
+function renderBookingCalendar(){
+  const cal=document.getElementById('bookingCalendar');
+  if(!cal)return;
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const lbl=document.getElementById('calMonthLabel');
+  if(lbl)lbl.textContent=`${monthNames[bookingMonth]} ${bookingYear}`;
+  const firstDay=new Date(bookingYear,bookingMonth,1).getDay();
+  const daysInMonth=new Date(bookingYear,bookingMonth+1,0).getDate();
+  cal.innerHTML=['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="cal-mini-hd">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) cal.innerHTML+=`<div></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===15&&bookingMonth===5;
+    const isPast=d<15&&bookingMonth===5;
+    cal.innerHTML+=`<div class="cal-mini-day ${isToday?'today':''} ${isPast?'':''}${selectedBookDate===d?' selected':''}" style="${isPast?'opacity:0.3;cursor:not-allowed':''}" onclick="${isPast?'':'selectBookDate('+d+')'}">${d}</div>`;
+  }
+}
+function changeMonth(dir){bookingMonth+=dir;if(bookingMonth>11){bookingMonth=0;bookingYear++;}if(bookingMonth<0){bookingMonth=11;bookingYear--;}renderBookingCalendar();}
+function selectBookDate(d){
+  selectedBookDate=d;
+  document.getElementById('selectedDateLabel').textContent=`June ${d}, 2026`;
+  document.getElementById('sumDate').textContent=`June ${d}, 2026`;
+  renderBookingCalendar();
+  renderTimeSlots();
+}
+window.changeMonth=changeMonth;window.selectBookDate=selectBookDate;
+
+function renderTimeSlots(){
+  const ts=document.getElementById('timeSlots');
+  if(!ts)return;
+  const slots=['5:00 PM','5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM'];
+  const booked=['6:00 PM','7:30 PM'];
+  ts.innerHTML=slots.map(s=>`<div class="time-slot ${booked.includes(s)?'booked':selectedSlot===s?'selected':''}" onclick="${booked.includes(s)?'':''}" onclick="selectSlot('${s}','${booked.includes(s)}')">${s}${booked.includes(s)?'<div style="font-size:9px;color:var(--red)">Booked</div>':''}</div>`).join('');
+}
+function selectSlot(slot,isBooked){
+  if(isBooked==='true')return;
+  selectedSlot=slot;
+  document.getElementById('sumTime').textContent=slot+' IST';
+  renderTimeSlots();
+}
+window.selectSlot=selectSlot;
+
+function renderSessionTypes(){
+  const st=document.getElementById('sessionTypes');
+  if(!st)return;
+  [{type:'30 min',desc:'Quick doubt clearing or code review',id:'30min'},
+   {type:'60 min',desc:'Deep dive session, problem walkthrough',id:'60min'},
+   {type:'90 min',desc:'Mock interview + full debrief',id:'90min'},
+  ].forEach(s=>{
+    const el=document.createElement('div');
+    el.className='card-sm';
+    el.style.cursor='pointer';
+    el.style.transition='all 0.15s';
+    el.innerHTML=`<div class="sm bold mb2">${s.type}</div><div class="xs muted">${s.desc}</div>`;
+    el.onclick=()=>{
+      document.querySelectorAll('#sessionTypes .card-sm').forEach(c=>{c.style.borderColor='var(--border)';c.style.background='';});
+      el.style.borderColor='var(--accent)';el.style.background='rgba(124,92,252,0.08)';
+      selectedSessionType=s.type;
+      document.getElementById('sumDur').textContent=s.type;
+      document.getElementById('sumType').textContent=s.type+' Session';
+    };
+    st.appendChild(el);
+  });
+}
+function confirmBooking(){
+  if(!selectedBookDate||!selectedSlot||!selectedSessionType){showToast('⚠','Please select a date, time, and session type','orange');return;}
+  openModal('bookingConfirmModal');
+}
+window.confirmBooking=confirmBooking;
+
+// Booking confirm modal
+const bcm=document.createElement('div');
+bcm.id='bookingConfirmModal';bcm.className='modal-overlay';
+bcm.setAttribute('onclick',"if(event.target===this)closeModal('bookingConfirmModal')");
+bcm.innerHTML=`<div class="modal" style="width:380px;text-align:center">
+  <div class="modal-hd" style="justify-content:flex-end"><div class="modal-close" onclick="closeModal('bookingConfirmModal')">×</div></div>
+  <div style="font-size:48px;margin-bottom:12px">🎉</div>
+  <div style="font-size:18px;font-weight:700;margin-bottom:6px">Session confirmed!</div>
+  <div class="sm muted mb16">Your session with <b>Priya K.</b> has been booked. You'll receive a reminder 1 hour before.</div>
+  <div class="card-sm mb16" style="text-align:left">
+    <div class="flex mb6"><span class="xs muted f1">Date</span><span class="xs bold" id="bcDate"></span></div>
+    <div class="flex mb6"><span class="xs muted f1">Time</span><span class="xs bold" id="bcTime"></span></div>
+    <div class="flex"><span class="xs muted f1">Duration</span><span class="xs bold" id="bcDur"></span></div>
+  </div>
+  <div class="flex gap6" style="justify-content:center">
+    <button class="btn btn-primary" onclick="closeModal('bookingConfirmModal');navigate('dashboard');showToast('📅','Session added to your schedule!','green')">Go to dashboard</button>
+    <button class="btn btn-ghost" onclick="closeModal('bookingConfirmModal')">Book another</button>
+  </div>
+</div>`;
+document.body.appendChild(bcm);
+
+const _confirm=window.confirmBooking;
+window.confirmBooking=function(){
+  if(!selectedBookDate||!selectedSlot||!selectedSessionType){showToast('⚠','Select date, time and session type first','orange');return;}
+  document.getElementById('bcDate').textContent=`June ${selectedBookDate}, 2026`;
+  document.getElementById('bcTime').textContent=selectedSlot+' IST';
+  document.getElementById('bcDur').textContent=selectedSessionType;
+  openModal('bookingConfirmModal');
+};
+
+setTimeout(()=>{renderBookingCalendar();renderTimeSlots();renderSessionTypes();},100);
+addSbItem('Book a Mentor','<circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/>','mentor-booking','','');
+
+
+// ─────────────────────────────────────────────
+// 4. SEASONS SCREEN
+// ─────────────────────────────────────────────
+addScreen('seasons',`
+<div class="section-hd mb16">
+  <div class="section-title">⚡ Seasons</div>
+  <span class="badge badge-gold">Season 3 Active</span>
+</div>
+
+<!-- Active season -->
+<div class="card mb20" style="background:linear-gradient(135deg,rgba(245,200,66,0.12),rgba(124,92,252,0.08));border-color:rgba(245,200,66,0.35)">
+  <div class="flex mb12">
+    <div>
+      <div style="font-size:20px;font-weight:700;color:var(--gold)">⚡ Season 3 — The Siege of Nullpointer Ridge</div>
+      <div class="muted sm mt4">Ranked season · Clan Wars · Exclusive cosmetics for top 100</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:22px;font-weight:700;color:var(--gold)">18d 04h 22m</div>
+      <div class="xs muted">Remaining</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px">
+    <div class="stat-mini"><div class="stat-big" style="font-size:15px;color:var(--accent)">#4</div><div class="stat-lbl">Your rank</div></div>
+    <div class="stat-mini"><div class="stat-big" style="font-size:15px;color:var(--gold)">98,441</div><div class="stat-lbl">Season score</div></div>
+    <div class="stat-mini"><div class="stat-big" style="font-size:15px;color:var(--green)">1,200</div><div class="stat-lbl">Season pts earned</div></div>
+    <div class="stat-mini"><div class="stat-big" style="font-size:15px;color:var(--orange)">412</div><div class="stat-lbl">Streak days</div></div>
+    <div class="stat-mini"><div class="stat-big" style="font-size:15px;color:var(--accent)">Grandmaster</div><div class="stat-lbl">Current tier</div></div>
+  </div>
+  <div class="prog-bar mb4" style="height:8px"><div class="prog-fill prog-gold" style="width:82%;background:var(--gold)"></div></div>
+  <div class="flex" style="justify-content:space-between"><span class="xs muted">98,441 / 120,000 to Legend</span><span class="xs" style="color:var(--gold)">Legend tier locked at 120k</span></div>
+</div>
+
+<!-- Season rewards -->
+<div class="section-hd mb12"><div class="section-title">Season 3 rewards</div></div>
+<div class="card mb20">
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px" id="seasonRewards"></div>
+</div>
+
+<!-- Past seasons -->
+<div class="section-hd mb12"><div class="section-title">Season history</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px" id="pastSeasons"></div>
+`);
+
+setTimeout(()=>{
+  const sr=document.getElementById('seasonRewards');
+  if(sr&&!sr.children.length){
+    [{tier:'Top 10',emoji:'👑',reward:'Legend Frame + Golden Badge',locked:true},
+     {tier:'Top 100',emoji:'🌟',reward:'Legend Title + Diamond Aura',locked:false},
+     {tier:'Top 500',emoji:'💎',reward:'Season 3 Trophy',locked:false},
+     {tier:'Top 1000',emoji:'🏆',reward:'Siege Badge',locked:false},
+     {tier:'Participant',emoji:'🎖',reward:'Season 3 Participation Badge',locked:false},
+    ].forEach(r=>{
+      sr.innerHTML+=`<div class="stat-mini" style="${!r.locked?'border:1px solid rgba(0,229,160,0.25);background:rgba(0,229,160,0.04)':'border:1px solid var(--border)'}">
+        <div style="font-size:22px;margin-bottom:4px">${r.emoji}</div>
+        <div class="xs bold mb2" style="color:${r.locked?'var(--muted)':'var(--green)'}">${r.tier}</div>
+        <div style="font-size:10px;color:var(--muted)">${r.reward}</div>
+        ${!r.locked?'<div class="xs" style="color:var(--green);margin-top:4px">✓ On track</div>':'<div class="xs muted mt4">Need +21,559 pts</div>'}
+      </div>`;
+    });
+  }
+
+  const ps=document.getElementById('pastSeasons');
+  if(ps&&!ps.children.length){
+    [{num:2,name:'The Data Storm',end:'Mar 2026',rank:7,score:84210,reward:'Diamond Aura',bg:'rgba(0,229,160,0.08)',color:'var(--green)'},
+     {num:1,name:'The Array Collapse',end:'Nov 2025',rank:14,score:71040,reward:'Siege Trophy',bg:'rgba(124,92,252,0.08)',color:'var(--accent)'},
+    ].forEach(s=>{
+      ps.innerHTML+=`<div class="season-card">
+        <div class="season-banner-img" style="background:${s.bg}">
+          <span style="font-size:48px;opacity:0.6">⚡</span>
+          <div style="position:absolute;top:10px;right:10px"><span class="badge badge-dim">Season ${s.num}</span></div>
+        </div>
+        <div style="padding:14px">
+          <div class="sm bold mb4">${s.name}</div>
+          <div class="xs muted mb8">Ended ${s.end}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+            <div class="stat-mini"><div class="stat-big" style="font-size:14px;color:${s.color}">#${s.rank}</div><div class="stat-lbl">Final rank</div></div>
+            <div class="stat-mini"><div class="stat-big" style="font-size:14px">${s.score.toLocaleString()}</div><div class="stat-lbl">Score</div></div>
+          </div>
+          <div class="flex"><span class="xs muted">🎁 Earned:</span><span class="xs bold" style="margin-left:6px;color:${s.color}">${s.reward}</span></div>
+        </div>
+      </div>`;
+    });
+    // Coming soon
+    ps.innerHTML+=`<div class="season-card" style="opacity:0.5">
+      <div class="season-banner-img" style="background:rgba(255,107,53,0.06)"><span style="font-size:48px;opacity:0.3">❓</span></div>
+      <div style="padding:14px"><div class="sm bold mb4">Season 4 — Unknown</div><div class="xs muted">Coming after Season 3 ends</div></div>
+    </div>`;
+  }
+},100);
+addSbItem('Seasons','<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>','seasons','gold','S3');
+
+
+// ─────────────────────────────────────────────
+// 5. ACHIEVEMENTS GALLERY (standalone)
+// ─────────────────────────────────────────────
+addScreen('achievements',`
+<div class="section-hd mb16">
+  <div class="section-title">🏅 Achievements</div>
+  <div class="flex gap6">
+    <span class="badge badge-green">12 / 48 earned</span>
+    <span class="badge badge-gold">3 Rare</span>
+    <span class="badge badge-purple">1 Legendary</span>
+  </div>
+</div>
+
+<div class="tabs" id="achTabs">
+  <div class="tab active" onclick="switchTab('achTabs','achTabContent',0)">All</div>
+  <div class="tab" onclick="switchTab('achTabs','achTabContent',1)">Earned</div>
+  <div class="tab" onclick="switchTab('achTabs','achTabContent',2)">Locked</div>
+  <div class="tab" onclick="switchTab('achTabs','achTabContent',3)">Rare &amp; Legendary</div>
+</div>
+<div id="achTabContent">
+  <div class="tab-content active" id="achAll"></div>
+  <div class="tab-content" id="achEarned"></div>
+  <div class="tab-content" id="achLocked"></div>
+  <div class="tab-content" id="achRare"></div>
+</div>
+`);
+
+const ALL_ACHIEVEMENTS=[
+  {emoji:'🎯',name:'First Blood',desc:'Solved your first problem',cat:'Problems',earned:true,rare:false,legendary:false},
+  {emoji:'💯',name:'Century',desc:'Solved 100 problems',cat:'Problems',earned:true,rare:false,legendary:false},
+  {emoji:'🔥',name:'Streak Starter',desc:'7-day streak',cat:'Consistency',earned:true,rare:false,legendary:false},
+  {emoji:'⚡',name:'Streak Warrior',desc:'30-day streak',cat:'Consistency',earned:true,rare:false,legendary:false},
+  {emoji:'🔥',name:'365-Day Legend',desc:'365-day unbroken streak',cat:'Consistency',earned:true,rare:true,legendary:false},
+  {emoji:'🏆',name:'Contest Debut',desc:'First contest participated',cat:'Contests',earned:true,rare:false,legendary:false},
+  {emoji:'🥇',name:'Podium Finish',desc:'Top 10 in a rated contest',cat:'Contests',earned:true,rare:true,legendary:false},
+  {emoji:'💎',name:'Diamond Coder',desc:'Reached Diamond rank',cat:'Rank',earned:true,rare:false,legendary:false},
+  {emoji:'🌟',name:'Star Mentor',desc:'Completed 100 mentor sessions',cat:'Mentoring',earned:true,rare:true,legendary:false},
+  {emoji:'🌐',name:'Open Source Hero',desc:'50+ open source contributions',cat:'Open Source',earned:true,rare:false,legendary:false},
+  {emoji:'📖',name:'Scribe',desc:'Published 10 editorials',cat:'Community',earned:true,rare:false,legendary:false},
+  {emoji:'👑',name:'Clan Champion',desc:'Led community to Clan Wars victory',cat:'Community',earned:true,rare:false,legendary:false},
+  // Locked
+  {emoji:'🌟',name:'Legendary',desc:'Reach Legend rank',cat:'Rank',earned:false,rare:false,legendary:true},
+  {emoji:'💪',name:'1000-Day Titan',desc:'1000-day streak',cat:'Consistency',earned:false,rare:true,legendary:true},
+  {emoji:'🧠',name:'DP Master',desc:'Solve 200 DP problems',cat:'Problems',earned:false,rare:false,legendary:false},
+  {emoji:'🕸️',name:'Graph God',desc:'Solve 150 graph problems',cat:'Problems',earned:false,rare:false,legendary:false},
+  {emoji:'⚔️',name:'Battle King',desc:'Win 100 coding battles',cat:'Battles',earned:false,rare:false,legendary:false},
+  {emoji:'🎓',name:'Grand Mentor',desc:'Complete 500 sessions',cat:'Mentoring',earned:false,rare:true,legendary:false},
+  {emoji:'🌍',name:'OSS Legend',desc:'200+ OSS contributions',cat:'Open Source',earned:false,rare:true,legendary:false},
+  {emoji:'👑',name:'Season Royale',desc:'Finish #1 in a season',cat:'Seasons',earned:false,rare:false,legendary:true},
+  {emoji:'🏛️',name:'Hall of Famer',desc:'Inducted into Hall of Fame',cat:'Special',earned:false,rare:false,legendary:true},
+  {emoji:'🤝',name:'Community Pillar',desc:'Help 1000 members',cat:'Community',earned:false,rare:true,legendary:false},
+];
+
+function buildAchGrid(container,achievements){
+  if(!container||container.innerHTML)return;
+  container.style.display='grid';
+  container.style.gridTemplateColumns='repeat(auto-fill,minmax(140px,1fr))';
+  container.style.gap='10px';
+  achievements.forEach(a=>{
+    const cls=a.legendary?'legendary':a.rare?'rare':'';
+    container.innerHTML+=`<div class="ach-card ${cls} ${a.earned?'':'locked'}" onclick="showAchDetail('${a.name}','${a.emoji}','${a.desc}','${a.earned}','${a.rare}','${a.legendary}')">
+      ${a.legendary?'<div class="badge badge-purple" style="font-size:9px;margin-bottom:6px;justify-content:center">Legendary</div>':a.rare?'<div class="badge badge-gold" style="font-size:9px;margin-bottom:6px;justify-content:center">Rare</div>':''}
+      <div style="font-size:30px;margin-bottom:6px">${a.emoji}</div>
+      <div class="xs bold mb2">${a.name}</div>
+      <div style="font-size:10px;color:var(--muted)">${a.desc}</div>
+      ${a.earned?'<div class="xs" style="color:var(--green);margin-top:6px">✓ Earned</div>':'<div class="xs muted mt6">🔒 Locked</div>'}
+    </div>`;
+  });
+}
+
+setTimeout(()=>{
+  buildAchGrid(document.getElementById('achAll'),ALL_ACHIEVEMENTS);
+  buildAchGrid(document.getElementById('achEarned'),ALL_ACHIEVEMENTS.filter(a=>a.earned));
+  buildAchGrid(document.getElementById('achLocked'),ALL_ACHIEVEMENTS.filter(a=>!a.earned));
+  buildAchGrid(document.getElementById('achRare'),ALL_ACHIEVEMENTS.filter(a=>a.rare||a.legendary));
+},100);
+
+function showAchDetail(name,emoji,desc,earned,rare,legendary){
+  showToast(emoji,`${name} — ${desc} · ${earned==='true'?'✓ Earned':'🔒 Locked'}`,earned==='true'?'green':'dim');
+}
+window.showAchDetail=showAchDetail;
+window.buildAchGrid=buildAchGrid;
+
+addSbItem('Achievements','<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>','achievements','','');
+
+
+// ─────────────────────────────────────────────
+// 6. OTHER USER PROFILE VIEW
+// ─────────────────────────────────────────────
+addScreen('user-profile',`
+<div>
+  <!-- Cover + Avatar -->
+  <div style="position:relative;margin-bottom:60px">
+    <div style="height:140px;background:linear-gradient(135deg,rgba(0,229,160,0.25),rgba(124,92,252,0.2));border-radius:12px;border:1px solid var(--border)"></div>
+    <div class="avatar av64 av-gold" style="position:absolute;bottom:-32px;left:20px;border:3px solid var(--void)">PK</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:20px">
+    <div>
+      <div class="flex mb8" style="gap:10px;align-items:flex-start">
+        <div class="f1">
+          <div class="flex gap8 mb4">
+            <span style="font-size:22px;font-weight:700">Priya Khatri</span>
+            <span class="badge badge-gold">★ Legend</span>
+            <span class="badge badge-green">✓ Verified</span>
+          </div>
+          <div class="sm muted mb6">Competitive Programmer · DSA Expert · Top Mentor · Open Source Contributor</div>
+          <div class="flex gap10 mb8">
+            <span class="sm muted">📍 Mumbai, India</span>
+            <span class="sm muted">🎓 IIT Bombay</span>
+            <span class="sm muted">👥 8,201 followers</span>
+            <span class="sm muted">Following 312</span>
+          </div>
+          <div class="flex gap6" style="flex-wrap:wrap">
+            <span class="tag">Python</span><span class="tag">C++</span><span class="tag">Competitive Programming</span><span class="tag">DSA</span><span class="tag">System Design</span>
+          </div>
+        </div>
+        <div class="flex gap6">
+          <button class="btn btn-primary btn-sm" onclick="showToast('✓','Following Priya K.!','purple')">Follow</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('💬','Opening DM…','dim')">Message</button>
+          <button class="btn btn-ghost btn-sm" onclick="navigate('mentor-booking')">Book session</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('battleModal')">⚔️ Challenge</button>
+        </div>
+      </div>
+
+      <div class="card mb16" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+        ${[{v:'112,440',l:'Power Score',c:'var(--accent)'},{v:'5,441',l:'Problems',c:'var(--green)'},{v:'847🔥',l:'Best streak',c:'var(--orange)'},{v:'2,890',l:'Contest rating',c:'var(--gold)'},{v:'194',l:'Sessions',c:'#c084fc'},{v:'Top 1%',l:'Percentile',c:'var(--green)'}].map(s=>`<div class="stat-mini"><div class="stat-big" style="font-size:14px;color:${s.c}">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('')}
+      </div>
+
+      <div class="tabs" id="upTabs">
+        <div class="tab active" onclick="switchTab('upTabs','upTabContent',0)">Overview</div>
+        <div class="tab" onclick="switchTab('upTabs','upTabContent',1)">Achievements</div>
+        <div class="tab" onclick="switchTab('upTabs','upTabContent',2)">Activity</div>
+      </div>
+      <div id="upTabContent">
+        <div class="tab-content active">
+          <div class="card mb12">
+            <div class="section-hd mb8"><div class="section-title">Contribution graph</div></div>
+            <div class="heatmap" id="upHeatmap"></div>
+          </div>
+          <div class="card">
+            <div class="section-hd mb8"><div class="section-title">Recent activity</div></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              ${['Solved Median of Two Sorted Arrays (Hard)','Won 1v1 battle vs Arjun R.','Published editorial for Trapping Rain Water','Mentored Karan V. — 60 min session','Reached #1 on community leaderboard'].map(a=>`<div class="flex gap6"><span style="color:var(--dim)">◉</span><span class="xs">${a}</span></div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="tab-content">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="upAchs"></div>
+        </div>
+        <div class="tab-content">
+          <div style="display:flex;flex-direction:column;gap:0" id="upTimeline"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card mb12">
+        <div class="section-hd mb8"><div class="section-title">Trading card</div></div>
+        <div style="display:flex;justify-content:center">
+          <div style="background:linear-gradient(135deg,#1a0d35,#0d1a35);border:1px solid rgba(124,92,252,0.4);border-radius:14px;padding:18px;width:180px;text-align:center;position:relative;overflow:hidden">
+            <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:var(--accent);border-radius:50%;opacity:0.07;filter:blur(20px)"></div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">CodeForge · Season 3</div>
+            <div class="avatar av48 av-gold" style="margin:0 auto 8px">PK</div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:2px">Priya Khatri</div>
+            <div style="font-size:10px;color:var(--gold);margin-bottom:10px">★ Legend</div>
+            <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px;text-align:center">
+              <div><div style="font-size:12px;font-weight:700;color:var(--accent)">112k</div><div style="font-size:8px;color:var(--muted)">Power</div></div>
+              <div><div style="font-size:12px;font-weight:700;color:var(--orange)">847🔥</div><div style="font-size:8px;color:var(--muted)">Streak</div></div>
+              <div><div style="font-size:12px;font-weight:700;color:var(--green)">5,441</div><div style="font-size:8px;color:var(--muted)">Solved</div></div>
+              <div><div style="font-size:12px;font-weight:700;color:var(--gold)">2,890</div><div style="font-size:8px;color:var(--muted)">Rating</div></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px" onclick="showToast('📋','Profile link copied!','green')">Share profile</button>
+      </div>
+      <div class="card">
+        <div class="section-hd mb8"><div class="section-title">Common connections</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[{init:'AR',av:'av-blue',name:'Arjun R.',rank:'Grandmaster'},{init:'MD',av:'av-green',name:'Meera D.',rank:'Diamond'},{init:'KV',av:'av-purple',name:'Karan V.',rank:'Diamond'}].map(u=>`<div class="flex gap6"><div class="avatar av32 ${u.av}">${u.init}</div><div class="f1"><div class="xs bold">${u.name}</div><div class="xs muted">${u.rank}</div></div><button class="btn btn-ghost btn-xs" onclick="showToast('✓','Following!','purple')">Follow</button></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`);
+
+setTimeout(()=>{
+  buildHeatmap('upHeatmap');
+  const ua=document.getElementById('upAchs');
+  if(ua&&!ua.innerHTML){
+    ALL_ACHIEVEMENTS.filter(a=>a.earned).slice(0,8).forEach(a=>{
+      ua.innerHTML+=`<div class="ach-card ${a.rare?'rare':''}">
+        <div style="font-size:24px;margin-bottom:6px">${a.emoji}</div>
+        <div class="xs bold">${a.name}</div>
+      </div>`;
+    });
+  }
+  const ut=document.getElementById('upTimeline');
+  if(ut&&!ut.innerHTML){
+    [{date:'Jun 15',e:['Won 1v1 vs Arjun R.','Solved 3 Hard problems']},{date:'Jun 14',e:['Mentored Karan V.','Wrote editorial (241 upvotes)']},{date:'Jun 13',e:['Clan Wars contribution: 1,441 problems','Reached #1 globally']}].forEach(d=>{
+      ut.innerHTML+=`<div style="display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--border)"><div class="xs muted" style="width:60px;flex-shrink:0;padding-top:2px">${d.date}</div><div>${d.e.map(ev=>`<div class="xs mb4">◉ ${ev}</div>`).join('')}</div></div>`;
+    });
+  }
+},150);
+
+// Connect "View profile" buttons in leaderboard to navigate to user-profile
+document.querySelectorAll('[onclick*="navigate(\'profile\')"]').forEach(btn=>{
+  if(btn.textContent.includes('Profile'))btn.setAttribute('onclick',"navigate('user-profile')");
+});
+addSbItem('View Profile','<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>','user-profile','','');
+
+
+// ─────────────────────────────────────────────
+// 7. KNOWLEDGE VAULT STANDALONE
+// ─────────────────────────────────────────────
+addScreen('vault',`
+<div class="section-hd mb16">
+  <div class="section-title">📖 Knowledge Vault</div>
+  <button class="btn btn-primary" onclick="openModal('vaultModal')">+ Add Note</button>
+</div>
+
+<div class="flex gap8 mb16" style="flex-wrap:wrap">
+  <input type="text" placeholder="Search vault…" style="max-width:260px;height:32px;padding:6px 10px" id="vaultSearch" oninput="filterVault(this.value)">
+  <select style="width:140px;height:32px;padding:4px 8px" id="vaultFilter" onchange="filterVault(document.getElementById('vaultSearch').value)">
+    <option value="">All patterns</option>
+    <option>Heap</option><option>DP</option><option>BFS/DFS</option><option>Sliding Window</option><option>Two Pointers</option><option>Backtracking</option>
+  </select>
+  <div class="flex gap6" style="margin-left:auto">
+    <span class="badge badge-purple">41 notes</span>
+    <span class="badge badge-green">12 patterns</span>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:200px 1fr;gap:16px">
+  <!-- Pattern sidebar -->
+  <div>
+    <div class="sm bold mb8" style="color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-size:10px">Patterns</div>
+    <div id="vaultPatternList"></div>
+  </div>
+
+  <!-- Notes grid -->
+  <div id="vaultNoteGrid" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+`);
+
+const VAULT_NOTES=[
+  {title:'Merge k Sorted Lists',pattern:'Min-heap',tags:['Heap','Linked List'],lesson:'Store (val, idx, node) tuples. Push head of each list initially, pop min, push next.',mistake:'Forgot tuple comparison crash — need index as tiebreaker.',date:'2 days ago'},
+  {title:'Sliding Window Maximum',pattern:'Monotonic Deque',tags:['Deque','Array'],lesson:'Deque front = current window max. Remove from back if smaller than current element.',mistake:'Off-by-one on window boundary.',date:'5 days ago'},
+  {title:'Word Ladder II',pattern:'BFS + Backtrack',tags:['BFS','Graph','String'],lesson:'Build parent map during BFS, then DFS from end back to start to reconstruct paths.',mistake:'Continued BFS after finding target level — TLE. Must stop at first found level.',date:'1 week ago'},
+  {title:'Coin Change',pattern:'Bottom-up DP',tags:['DP'],lesson:'dp[i] = min coins for amount i. For each coin, iterate from coin to amount.',mistake:'Initialized dp with wrong sentinel. Use float("inf"), not -1.',date:'1 week ago'},
+  {title:'Course Schedule II',pattern:'Topological Sort',tags:['Graph','DFS'],lesson:'DFS with coloring: white=unvisited, gray=processing, black=done. Append to result when fully processed.',mistake:'Used BFS (Kahn\'s) but forgot to handle disconnected components.',date:'2 weeks ago'},
+  {title:'Alien Dictionary',pattern:'Topological Sort',tags:['Graph','String'],lesson:'Build adjacency from character ordering differences between adjacent words. Watch for invalid inputs.',mistake:'Missed the case where prefix word comes AFTER longer word — invalid.',date:'2 weeks ago'},
+];
+
+function renderVaultNotes(notes){
+  const ng=document.getElementById('vaultNoteGrid');
+  if(!ng)return;
+  ng.innerHTML='';
+  notes.forEach(n=>{
+    ng.innerHTML+=`<div class="card" style="border-left:3px solid var(--accent)">
+      <div class="flex mb8">
+        <div class="f1">
+          <div class="sm bold">${n.title}</div>
+          <div class="flex gap4 mt4">${n.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="right">
+          <span class="badge badge-purple">${n.pattern}</span>
+          <div class="xs muted mt4">${n.date}</div>
+        </div>
+      </div>
+      <div class="sm mb6" style="color:var(--text);line-height:1.6"><span class="xs muted">💡 Lesson: </span>${n.lesson}</div>
+      ${n.mistake?`<div class="sm" style="color:var(--red);line-height:1.6"><span class="xs">⚠ Mistake: </span>${n.mistake}</div>`:''}
+      <div class="flex gap4 mt10">
+        <button class="btn btn-ghost btn-xs" onclick="showToast('✏️','Editing note…','dim')">Edit</button>
+        <button class="btn btn-ghost btn-xs" onclick="showToast('🔁','Added to revision queue!','purple')">Revise</button>
+        <button class="btn btn-ghost btn-xs" onclick="openModal('solveModal')">Practice</button>
+      </div>
+    </div>`;
+  });
+}
+
+function filterVault(q){
+  const f=document.getElementById('vaultFilter')?.value||'';
+  const filtered=VAULT_NOTES.filter(n=>{
+    const matchQ=!q||n.title.toLowerCase().includes(q.toLowerCase())||n.pattern.toLowerCase().includes(q.toLowerCase());
+    const matchF=!f||n.pattern===f||n.tags.includes(f);
+    return matchQ&&matchF;
+  });
+  renderVaultNotes(filtered);
+}
+window.filterVault=filterVault;
+
+setTimeout(()=>{
+  renderVaultNotes(VAULT_NOTES);
+  const pl=document.getElementById('vaultPatternList');
+  if(pl&&!pl.innerHTML){
+    const patterns=[...new Set(VAULT_NOTES.map(n=>n.pattern))];
+    pl.innerHTML=`<div class="sb-item active" onclick="filterVault('')">All notes <span class="sb-badge">${VAULT_NOTES.length}</span></div>`;
+    patterns.forEach(p=>{
+      const count=VAULT_NOTES.filter(n=>n.pattern===p).length;
+      pl.innerHTML+=`<div class="sb-item" onclick="document.getElementById('vaultFilter').value='${p}';filterVault(document.getElementById('vaultSearch').value)">${p} <span class="sb-badge">${count}</span></div>`;
+    });
+  }
+},100);
+
+addSbItem('Knowledge Vault','<path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>','vault','','');
+
+
+// ─────────────────────────────────────────────
+// 8. PATCH: Wire up existing buttons that showToast to real screens
+// ─────────────────────────────────────────────
+// Make leaderboard "view profile" go to user-profile
+setTimeout(()=>{
+  document.querySelectorAll('#leaderboardTable td button').forEach(btn=>{
+    if(btn.textContent.trim()==='')return;
+  });
+
+  // Study rooms — "Join Room" → studyroom-live
+  document.querySelectorAll('#studyRooms button').forEach(btn=>{
+    if(btn.textContent.includes('Join Room')){
+      btn.onclick=()=>navigate('studyroom-live');
+    }
+  });
+
+  // Mentor grid "Book" buttons → mentor-booking
+  document.querySelectorAll('#mentorGrid button').forEach(btn=>{
+    if(btn.textContent.includes('Book')){
+      btn.onclick=()=>navigate('mentor-booking');
+    }
+  });
+
+  // Profile achievements tab → achievements screen link
+  const achBtn=document.querySelector('#profileTabs .tab:nth-child(3)');
+  // Just let it stay as profile tab but add quick link
+}, 800);
+
+
+// ─────────────────────────────────────────────
+// 9. PATCH: Recruiter candidate detail modal
+// ─────────────────────────────────────────────
+const cdm=document.createElement('div');
+cdm.id='candidateDetailModal';cdm.className='modal-overlay';
+cdm.setAttribute('onclick',"if(event.target===this)closeModal('candidateDetailModal')");
+cdm.innerHTML=`<div class="modal" style="width:600px">
+  <div class="modal-hd"><div class="modal-title">Candidate Profile</div><div class="modal-close" onclick="closeModal('candidateDetailModal')">×</div></div>
+  <div id="candidateDetailBody">
+    <div class="flex mb16" style="gap:14px">
+      <div class="avatar av64 av-gold">PK</div>
+      <div class="f1">
+        <div class="flex gap8 mb4"><span style="font-size:18px;font-weight:700">Priya K.</span><span class="badge badge-gold">★ Legend</span><span class="badge badge-green">✓ Verified</span></div>
+        <div class="sm muted mb4">Full Stack · Competitive Programmer · DSA Expert</div>
+        <div class="flex gap8"><span class="xs muted">📍 Mumbai</span><span class="xs muted">🎓 IIT Bombay</span></div>
+      </div>
+      <div>
+        <select style="width:160px;height:30px;padding:4px 8px;font-size:12px;margin-bottom:6px">
+          <option>Actively looking</option><option>Passively open</option>
+        </select>
+        <button class="btn btn-primary btn-sm" style="width:100%" onclick="closeModal('candidateDetailModal');showToast('📩','Interview invite sent to Priya K.!','green')">Send invite</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+      ${[{v:'98,441',l:'Power',c:'var(--accent)'},{v:'5,441',l:'Problems',c:'var(--green)'},{v:'2,890',l:'Rating',c:'var(--gold)'},{v:'847d🔥',l:'Best streak',c:'var(--orange)'}].map(s=>`<div class="stat-mini"><div class="stat-big" style="font-size:16px;color:${s.c}">${s.v}</div><div class="stat-lbl">${s.l}</div></div>`).join('')}
+    </div>
+    <div class="divider"></div>
+    <div class="grid2 mt12">
+      <div>
+        <div class="sm bold mb8">Verified skills</div>
+        ${['Python · 1,800+ problems','C++ · Contest veteran','System Design · 80+ mocks','Open Source · 69 commits'].map(s=>`<div class="flex gap6 mb4"><span style="color:var(--green)">✓</span><span class="xs">${s}</span></div>`).join('')}
+      </div>
+      <div>
+        <div class="sm bold mb8">Recent activity</div>
+        ${['Solved Trapping Rain Water (Hard)','Won Weekly Contest #23 — Rank #4','Mentored 3 developers this week','PR merged in tensorflow/tensorflow'].map(s=>`<div class="xs muted mb4">◉ ${s}</div>`).join('')}
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="flex gap6 mt12">
+      <button class="btn btn-primary f1" onclick="closeModal('candidateDetailModal');showToast('📩','Interview invite sent!','green')">Send interview invite</button>
+      <button class="btn btn-ghost f1" onclick="showToast('📋','Profile saved to shortlist!','purple');closeModal('candidateDetailModal')">Shortlist</button>
+      <button class="btn btn-ghost" onclick="navigate('user-profile');closeModal('candidateDetailModal')">Full profile</button>
+    </div>
+  </div>
+</div>`;
+document.body.appendChild(cdm);
+
+// Wire recruiter results to open modal
+setTimeout(()=>{
+  document.querySelectorAll('#recruiterResults .card').forEach((card,i)=>{
+    const btn=card.querySelector('button:last-of-type');
+    if(btn&&btn.textContent.includes('Profile')){
+      btn.onclick=()=>openModal('candidateDetailModal');
+    }
+  });
+},1000);
+
+
+// ─────────────────────────────────────────────
+// 10. PATCH: Navigate wrapper — set mobile nav too
+// ─────────────────────────────────────────────
+const _origNavigate=window.navigate;
+window.navigate=function(screen){
+  _origNavigate(screen);
+  setMN(screen);
+};
+
+})(); // end IIFE
+</script>
+
 </body>
 </html>
