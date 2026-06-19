@@ -411,11 +411,14 @@ input:focus,textarea:focus{border-color:var(--accent)}
     </div>
 
     <div class="sb-user">
-      <div class="sb-avatar">SK</div>
-      <div>
+      <div class="sb-avatar" onclick="navigate('profile')" style="cursor:pointer">SK</div>
+      <div class="f1" onclick="navigate('profile')" style="cursor:pointer">
         <div class="sb-uname">Sujal K.</div>
         <div class="sb-urole sb-urole" style="display:flex;align-items:center;gap:4px"><span style="color:var(--gold);font-size:10px">★</span><span class="xs muted">Legend · 412🔥</span></div>
       </div>
+      <button class="btn-icon" title="Sign out" onclick="event.stopPropagation();doLogout()" style="width:28px;height:28px;flex-shrink:0">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
     </div>
   </aside>
 
@@ -2603,13 +2606,22 @@ function initSettings(){
 function renderSettSection(s){
   const sc=document.getElementById('settContent');
   const maps={
-    'Account':`<div class="card">
+    'Account':`<div class="card mb16">
       <div class="section-hd mb16"><div class="section-title">Account</div></div>
       <div class="form-group"><div class="form-label">Email</div><input type="email" value="sujal.khatri@example.com"></div>
       <div class="form-group"><div class="form-label">Username</div><input type="text" value="sujalkhatri"></div>
       <div class="form-group"><div class="form-label">Display name</div><input type="text" value="Sujal Khatri"></div>
       <div class="form-group"><div class="form-label">Password</div><input type="password" value="••••••••••"></div>
       <button class="btn btn-primary" onclick="showToast('✓','Account settings saved!','green')">Save changes</button>
+    </div>
+    <div class="card mb16">
+      <div class="section-hd mb12"><div class="section-title">Session</div></div>
+      <div class="flex"><span class="sm f1">Signed in as Sujal Khatri (sujalkhatri)</span><button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button></div>
+    </div>
+    <div class="card" style="border-color:rgba(255,68,102,0.3)">
+      <div class="section-hd mb12"><div class="section-title" style="color:var(--red)">Danger zone</div></div>
+      <div class="flex mb10"><span class="sm f1">Deactivate account (recoverable, hidden from rankings)</span><button class="btn btn-danger btn-sm" onclick="openModal('deactivateModal')">Deactivate</button></div>
+      <div class="flex"><span class="sm f1">Permanently delete account and all data</span><button class="btn btn-danger btn-sm" onclick="showToast('⚠','Contact support to permanently delete your account','orange')">Delete</button></div>
     </div>`,
     'Notifications':`<div class="card">
       <div class="section-hd mb16"><div class="section-title">Notifications</div></div>
@@ -4977,6 +4989,244 @@ setTimeout(()=>{
     startBtn.setAttribute('onclick',"closeModal('mockInterviewModal');startMockInterview()");
   }
 },500);
+
+})();
+</script>
+
+<!-- ============================================================
+     CODEFORGE — PATCH 4: LOGOUT, LIGHT MODE, CAREER QUEST DETAIL
+============================================================ -->
+<style>
+/* ── Light mode palette ── */
+body.light-mode{
+  --void:#f5f5f8;--surface:#ffffff;--panel:#ffffff;--panel2:#f0f0f5;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#15151f;--muted:#5c5c75;--dim:#b8b8cc;
+}
+body.light-mode .code-block{background:#1a1a26;color:#e8e8f0}
+body.light-mode .trading-card,body.light-mode .tc{background:linear-gradient(135deg,#1a0d35,#0d1a35)!important;color:#e8e8f0}
+body.light-mode ::-webkit-scrollbar-thumb{background:#c8c8da}
+
+/* ── Logout confirm ── */
+.logout-modal-icon{width:56px;height:56px;border-radius:14px;background:rgba(255,68,102,0.12);border:1px solid rgba(255,68,102,0.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px}
+</style>
+
+<!-- Logout confirmation modal -->
+<div id="logoutModal" class="modal-overlay" onclick="if(event.target===this)closeModal('logoutModal')">
+  <div class="modal" style="width:340px;text-align:center">
+    <div class="modal-hd" style="justify-content:flex-end"><div class="modal-close" onclick="closeModal('logoutModal')">×</div></div>
+    <div class="logout-modal-icon">🚪</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px">Sign out of CodeForge?</div>
+    <div class="sm muted mb20">Your 412-day streak is safe. You'll need to sign back in to continue your progress.</div>
+    <div class="flex gap6">
+      <button class="btn btn-ghost f1" onclick="closeModal('logoutModal')">Cancel</button>
+      <button class="btn btn-danger f1" onclick="confirmLogout()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deactivate account modal -->
+<div id="deactivateModal" class="modal-overlay" onclick="if(event.target===this)closeModal('deactivateModal')">
+  <div class="modal" style="width:380px">
+    <div class="modal-hd"><div class="modal-title" style="color:var(--red)">Deactivate account</div><div class="modal-close" onclick="closeModal('deactivateModal')">×</div></div>
+    <div class="card-sm mb14" style="background:rgba(255,68,102,0.06);border-color:rgba(255,68,102,0.3)">
+      <div class="sm bold mb4" style="color:var(--red)">⚠ This will hide your profile</div>
+      <div class="xs muted">Your profile will be archived and hidden from leaderboards, recruiter search, and communities. Your data is never deleted — you can reactivate anytime by signing back in.</div>
+    </div>
+    <div class="form-group"><div class="form-label">Why are you deactivating? (optional)</div>
+      <select><option>Taking a break</option><option>Too many notifications</option><option>Found another platform</option><option>Other</option></select>
+    </div>
+    <div class="flex gap6">
+      <button class="btn btn-danger f1" onclick="closeModal('deactivateModal');showToast('💤','Account deactivated. Sign back in anytime to reactivate.','dim');setTimeout(()=>window.location.href='landing.html',1500)">Deactivate my account</button>
+      <button class="btn btn-ghost" onclick="closeModal('deactivateModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Career quest detail modal -->
+<div id="questDetailModal" class="modal-overlay" onclick="if(event.target===this)closeModal('questDetailModal')">
+  <div class="modal" style="width:520px">
+    <div class="modal-hd">
+      <div><div class="modal-title" id="qdTitle">Backend Engineer</div><div class="xs muted mt4" id="qdSub">RPG-style career path</div></div>
+      <div class="modal-close" onclick="closeModal('questDetailModal')">×</div>
+    </div>
+    <div class="flex mb16" style="gap:8px">
+      <div class="prog-bar f1" style="height:8px"><div class="prog-fill prog-purple" id="qdProgBar" style="width:65%"></div></div>
+      <span class="xs bold" id="qdProgPct" style="color:var(--accent)">65%</span>
+    </div>
+    <div id="qdMilestones" style="display:flex;flex-direction:column;gap:0"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+// ─────────────────────────────────────────────
+// LOGOUT
+// ─────────────────────────────────────────────
+function doLogout(){ openModal('logoutModal'); }
+function confirmLogout(){
+  closeModal('logoutModal');
+  showToast('👋','Signed out. See you tomorrow!','dim');
+  setTimeout(()=>{ window.location.href='landing.html'; },900);
+}
+window.doLogout=doLogout;
+window.confirmLogout=confirmLogout;
+
+
+// ─────────────────────────────────────────────
+// LIGHT MODE — wire to existing Appearance settings buttons
+// ─────────────────────────────────────────────
+function setTheme(mode){
+  document.body.classList.toggle('light-mode',mode==='light');
+  localStorage.setItem('cf-theme',mode);
+}
+window.setTheme=setTheme;
+
+// Patch the Appearance section's Dark/Light/Auto buttons once Settings renders
+const _origRenderSett=window.renderSettSection;
+window.renderSettSection=function(s){
+  _origRenderSett(s);
+  if(s==='Appearance'){
+    setTimeout(()=>{
+      const btns=document.querySelectorAll('#settContent .btn-sm');
+      btns.forEach(b=>{
+        const txt=b.textContent.trim();
+        if(txt==='Dark'){b.onclick=()=>{setTheme('dark');refreshThemeBtns();};}
+        if(txt==='Light'){b.onclick=()=>{setTheme('light');refreshThemeBtns();};}
+        if(txt==='Auto'){b.onclick=()=>{const auto=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';setTheme(auto);refreshThemeBtns();};}
+      });
+      refreshThemeBtns();
+    },50);
+  }
+};
+function refreshThemeBtns(){
+  const isLight=document.body.classList.contains('light-mode');
+  const btns=document.querySelectorAll('#settContent .btn-sm');
+  btns.forEach(b=>{
+    const txt=b.textContent.trim();
+    if(txt==='Dark'||txt==='Light'){
+      const active=(txt==='Light'&&isLight)||(txt==='Dark'&&!isLight);
+      b.className='btn btn-sm '+(active?'btn-primary':'btn-ghost');
+    }
+  });
+}
+// Restore saved theme on load
+const savedTheme=localStorage.getItem('cf-theme');
+if(savedTheme==='light')setTheme('light');
+
+
+// ─────────────────────────────────────────────
+// CAREER QUEST DETAIL DRILL-DOWN
+// ─────────────────────────────────────────────
+const questDetails={
+  'Backend Engineer':{
+    sub:'Master APIs, databases, and distributed systems',
+    progress:65,
+    milestones:[
+      {title:'REST API fundamentals',done:true,desc:'Build CRUD APIs, understand HTTP methods and status codes'},
+      {title:'Database design',done:true,desc:'Normalization, indexing, query optimization'},
+      {title:'Authentication & security',done:true,desc:'JWT, OAuth, password hashing, rate limiting'},
+      {title:'Caching & performance',done:false,desc:'Redis, CDN strategies, query caching',active:true},
+      {title:'Microservices architecture',done:false,desc:'Service decomposition, API gateways, service mesh'},
+      {title:'Capstone project',done:false,desc:'Build and deploy a production-grade backend system'},
+    ]
+  },
+  'AI Engineer':{
+    sub:'ML fundamentals, deep learning, and MLOps',
+    progress:40,
+    milestones:[
+      {title:'Python for ML',done:true,desc:'NumPy, Pandas, data preprocessing'},
+      {title:'Classical ML algorithms',done:true,desc:'Regression, classification, clustering, trees'},
+      {title:'Neural networks',done:false,desc:'Backprop, CNNs, RNNs, transformers',active:true},
+      {title:'MLOps',done:false,desc:'Model deployment, monitoring, versioning'},
+      {title:'LLM fine-tuning',done:false,desc:'Prompt engineering, RAG, fine-tuning techniques'},
+      {title:'Capstone project',done:false,desc:'Ship an end-to-end ML product'},
+    ]
+  },
+  'Full Stack Dev':{
+    sub:'Frontend + Backend + DevOps mastery',
+    progress:55,
+    milestones:[
+      {title:'Frontend fundamentals',done:true,desc:'HTML, CSS, JavaScript, responsive design'},
+      {title:'Modern frontend framework',done:true,desc:'React/Vue component architecture, state management'},
+      {title:'Backend & APIs',done:true,desc:'REST/GraphQL APIs, server-side logic'},
+      {title:'Databases',done:false,desc:'SQL and NoSQL design, ORMs',active:true},
+      {title:'DevOps basics',done:false,desc:'Docker, CI/CD pipelines, cloud deployment'},
+      {title:'Capstone project',done:false,desc:'Ship a full production web application'},
+    ]
+  },
+  'Competitive Programmer':{
+    sub:'Reach International Master level',
+    progress:78,
+    milestones:[
+      {title:'Core DSA mastery',done:true,desc:'Arrays, trees, graphs, all fundamental structures'},
+      {title:'Advanced DP',done:true,desc:'Bitmask DP, tree DP, digit DP'},
+      {title:'Graph algorithms',done:true,desc:'Shortest paths, MST, flow networks'},
+      {title:'Advanced data structures',done:true,desc:'Segment trees, Fenwick trees, persistent structures'},
+      {title:'Contest strategy',done:false,desc:'Time management, partial scoring, problem triage',active:true},
+      {title:'Reach IM rating (2400+)',done:false,desc:'Sustained top-tier contest performance'},
+    ]
+  },
+};
+
+function openQuestDetail(name){
+  const q=questDetails[name];
+  if(!q)return;
+  document.getElementById('qdTitle').textContent=name;
+  document.getElementById('qdSub').textContent=q.sub;
+  document.getElementById('qdProgBar').style.width=q.progress+'%';
+  document.getElementById('qdProgPct').textContent=q.progress+'%';
+  const ms=document.getElementById('qdMilestones');
+  ms.innerHTML=q.milestones.map(m=>`<div class="roadmap-item" style="border-bottom:1px solid var(--border);padding:10px 0">
+    <div class="roadmap-dot" style="background:${m.done?'var(--green-dim)':m.active?'var(--accent-dim)':'var(--panel2)'};border:2px solid ${m.done?'var(--green)':m.active?'var(--accent)':'var(--dim)'};color:${m.done?'var(--green)':m.active?'var(--accent)':'var(--dim)'}">${m.done?'✓':m.active?'◉':'○'}</div>
+    <div class="f1">
+      <div class="sm bold" style="color:${m.done?'var(--green)':m.active?'var(--accent)':'var(--text)'}">${m.title}</div>
+      <div class="xs muted mt2">${m.desc}</div>
+    </div>
+    ${m.active?'<button class="btn btn-primary btn-xs" onclick="closeModal(\'questDetailModal\');navigate(\'skilltree\')">Continue</button>':''}
+  </div>`).join('');
+  openModal('questDetailModal');
+}
+window.openQuestDetail=openQuestDetail;
+
+// Wire the Career Quest "Continue" buttons (on quest path cards) to open detail
+setTimeout(()=>{
+  const qp=document.getElementById('questPaths');
+  if(qp){
+    qp.querySelectorAll('.card').forEach(card=>{
+      const name=card.querySelector('.sm.bold')?.textContent.trim();
+      const btn=card.querySelector('button');
+      if(name&&btn&&questDetails[name]){
+        btn.setAttribute('onclick',`openQuestDetail('${name}')`);
+        card.style.cursor='pointer';
+        card.onclick=(e)=>{ if(e.target.tagName!=='BUTTON') openQuestDetail(name); };
+      }
+    });
+  }
+},600);
+
+// Re-wire whenever careerquest screen is navigated to (since it's lazy-rendered once)
+const _origNav2=window.navigate;
+window.navigate=function(screen){
+  _origNav2(screen);
+  if(screen==='careerquest'){
+    setTimeout(()=>{
+      const qp=document.getElementById('questPaths');
+      if(qp){
+        qp.querySelectorAll('.card').forEach(card=>{
+          const name=card.querySelector('.sm.bold')?.textContent.trim();
+          const btn=card.querySelector('button');
+          if(name&&btn&&questDetails[name]&&!btn.dataset.wired){
+            btn.dataset.wired='1';
+            btn.setAttribute('onclick',`openQuestDetail('${name}')`);
+            card.style.cursor='pointer';
+          }
+        });
+      }
+    },100);
+  }
+};
 
 })();
 </script>
